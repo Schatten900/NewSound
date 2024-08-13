@@ -1,4 +1,4 @@
-from flask import Flask,jsonify,request
+from flask import Flask, request, render_template, jsonify,redirect,url_for, session
 
 app = Flask(__name__)
 
@@ -8,15 +8,15 @@ def home():
 
 @app.route("/login")
 def login():
-    pass
+    return render_template("login.html")
 
-@app.route("register")
+@app.route("/register")
 def registrar():
-    pass
+    return render_template("register.html")
 
 @app.route("/playlist")
 def playlist():
     pass
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=8000)

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+
+    <link href="{{url_for('static',filename='styles/login.css')}}" rel="stylesheet">
+    <link href="{{url_for('static',filename='styles/register.css')}}" rel="stylesheet" >
+</head>
+
+<body>
+    <div id="registerContainer">
+        <form id="registerForm">
+            <div>
+                <label id="registerText">Registre-se </label>
+            </div>
+
+            <div id="registerField">
+                <input type="text" placeholder="Nome" class="loginInput" id="registerNome">
+                <input type="email" placeholder="Email" class="loginInput" id="registerEmail">
+                <input type="password" placeholder="Senha" class="loginInput" id="registerPassword">
+                <input type="password" placeholder="Confirme a Senha" class="loginInput" id="registerConfirm">
+            </div>
+
+            <div>
+                <button id="registerButtom" class="enterButtom">Register</button>
+            </div>
+
+            <div>
+                <a href="{{ url_for('login') }}">
+                    <span id="textAlready"> Já possui conta? Entre</span>
+                </a>
+            </div>
+        </form>
+    </div>
+
+</body>
+
+</html>

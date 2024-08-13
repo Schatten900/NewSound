@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+    margin-top: 0;
+    min-height: 100vh;
+    background: linear-gradient(0deg, rgb(0, 99, 14), rgb(0, 0, 0) 60%);
+    background-size: 300% 300%;
+    animation: gradientAnimation 8s ease infinite;
+}
+
+/*Animacao: 0% é o inicio, 50% meio e 100% fim da animação*/
+@keyframes gradientAnimation {
+
+    0% {
+        background-position: 50% 30%;
+    }
+
+    50% {
+        background-position: 50% 75%;
+    }
+
+    100% {
+        background-position: 50% 30%;
+    }
+}
+
+#loginContainer {
+    width: 400px;
+    height: 300px;
+
+    border-radius: 20px;
+    background-color: rgba(26, 26, 26, 0.911);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+#loginForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    gap: 30px;
+    align-items: center;
+}
+
+#loginField {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.loginInput {
+    font-family: "Oswald", sans-serif;
+    text-align: center;
+    width: 250px;
+    height: 26px;
+    border-radius: 5px;
+    border: none;
+    background-color: rgb(78, 78, 78);
+    color: rgb(255, 255, 255);
+    transition: transform 0.3s ease;
+}
+
+.loginInput:hover {
+    transform: scale(1.05, 1.05);
+}
+
+#loginText {
+    font-size: 32px;
+    font-family: "Oswald", sans-serif;
+    color: rgb(0, 255, 21);
+}
+
+#textAlready {
+    font-size: 15px;
+    color: rgb(0, 255, 21);
+}
+
+.enterButtom {
+    font-family: "Oswald", sans-serif;
+    color: rgb(0, 0, 0);
+    background-color: rgb(0, 255, 21);
+    border-radius: 3px;
+    border: none;
+    width: 125px;
+    height: 30px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.enterButtom:hover {
+    transform: scale(1.2, 1.2);
+}
