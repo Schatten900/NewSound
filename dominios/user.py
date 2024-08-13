@@ -135,10 +135,3 @@ class Usuario:
             self.getSenha().set(senha)
         except Exception as e:
             print("Não foi possivel conectar a conta")
-
-
-user = Usuario()
-user.setUsuario("Carlos Caua","xxxthreshxxx@gmail.com","122410")
-print(user.getEmail().get())
-print(user.getNome().get())
-print(user.getSenha().get())
