@@ -1,4 +1,8 @@
 # TrabalhoBD
+site hospedado(ainda vai ser) no Heroku;
+banco de dados configurado no heroku;
+Utilizaremos Postgre(Mais facil de conectar no Heroku);
+
 Funcionalidades:
 1) Cadastro do usuario (Carlos)
  - Adicionar usuario
