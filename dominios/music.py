@@ -1,7 +1,7 @@
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
-from user import dominio
+from dominios.user import dominio
 from dotenv import load_dotenv
 import os
 
