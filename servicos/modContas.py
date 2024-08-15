@@ -1,4 +1,4 @@
-from dominios.user import Usuario
+from dominios.user import Usuario,Email,Nome,Senha
 
 #Chamada na camada de apresentação para efetuar o serviço
 class CntrlSConta:
@@ -16,6 +16,22 @@ class CntrlSConta:
             return None
         if senha != confirm:
             return None
+        
+        #Checar se os valores sao validos
+        emailAux = Email()
+        emailAux.set(email)
+        if not emailAux.get():
+            return None
+
+        nomeAux = Nome()
+        nomeAux.set(nome)
+        if not nomeAux.get():
+            return None
+
+        senhaAux = Senha()
+        senhaAux.set(senha)
+        if not senhaAux.get():
+            return None
 
         conta = self.getConta()
         container = ContainerConta()
@@ -24,6 +40,20 @@ class CntrlSConta:
         return conta
 
     def logar(self,email,senha):
+        if not email or not senha:
+            return None
+        
+        #Checar se os valores sao validos
+        emailAux = Email()
+        emailAux.set(email)
+        if not emailAux.get():
+            return None
+
+        senhaAux = Senha()
+        senhaAux.set(senha)
+        if not senhaAux.get():
+            return None
+
         conta = self.getConta()
         container = ContainerConta()
         container.logar(email,senha)
@@ -53,14 +83,19 @@ class CntrlSConta:
 #Acessa o banco de dados e faz as operacoes
 class ContainerConta:
     def cadastrar(self,nome,email,senha):
-        user = Usuario()
-        return user
         #logica para cadastrar no banco
+        #usar para o id o autoIncrement do SGBD
+        #id = cursor.lastrowid
+        user = Usuario()
+        #user.setUsuario(nome,email,senha,id)
+        return user
 
     def logar(self,email,senha):
-        user = Usuario()
-        return user
         #logica para logar no banco
+        #parametros obtidos pelo select
+        user = Usuario()
+        #user.setUsuario(nome,email,senha,id)
+        return user
         
     def ler(self,email):
         #logica para ler do banco de dados a conta

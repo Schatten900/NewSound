@@ -1,5 +1,10 @@
 from abc import ABC, abstractmethod
 import re
+import random
+
+def GerarID():
+    aux = random.randint(1,1000)
+    return aux
 
 class dominio(ABC):
     def __init__(self):
@@ -140,10 +145,4 @@ class Usuario:
             self.getSenha().set(senha)
             self.id = id
         except Exception as e:
-<<<<<<< HEAD
             print(f"Não foi possivel conectar a conta: {e}")
-
-
-=======
-            print("Não foi possivel conectar a conta")
->>>>>>> 87e88eafd27b4790108b99b3b45772ec6e968a93

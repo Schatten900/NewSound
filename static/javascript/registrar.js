@@ -4,7 +4,7 @@ function Registrar() {
     const senha = document.getElementById("registerPassword").value;
     const confirm = document.getElementById("registerConfirm").value;
 
-    if (senha != confirm) {
+    if (senha !== confirm) {
         window.alert("As senhas devem ser iguais")
         return;
     }
