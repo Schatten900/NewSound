@@ -140,6 +140,10 @@ class Usuario:
             self.getSenha().set(senha)
             self.id = id
         except Exception as e:
+<<<<<<< HEAD
             print(f"Não foi possivel conectar a conta: {e}")
 
 
+=======
+            print("Não foi possivel conectar a conta")
+>>>>>>> 87e88eafd27b4790108b99b3b45772ec6e968a93

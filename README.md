@@ -1,6 +1,10 @@
 # TrabalhoBD
+site hospedado(ainda vai ser) no Heroku;
+banco de dados configurado no heroku;
+Utilizaremos Postgre(Mais facil de conectar no Heroku);
+
 Funcionalidades:
-1) Cadastro do usuario
+1) Cadastro do usuario (Carlos)
  - Adicionar usuario
  - Editar informacoes do usuario
  - Excluir conta do usuario
@@ -13,7 +17,7 @@ Funcionalidades:
  - Tocar a musica da playlist (select)
  - Visualizacao das musicas da playlist (select)
 
-3) Salvar musicas
+3) Salvar musicas 
  - Adicionar musicas sem necessariamente botar numa playlist
  - Remover musicas dos salvos
  - visualizar as musicas salvas
