@@ -11,14 +11,14 @@
 
 <body>
     <div id="loginContainer">
-        <form id="loginForm">
+        <form id="loginForm" method="POST" action="/login">
             <div>
                 <label id="loginText">Bem-vindo </label>
             </div>
 
             <div id="loginField">
-                <input type="text" placeholder="Email" class="loginInput" id="loginEmail">
-                <input type="password" placeholder="Senha" class="loginInput" id="loginPassword">
+                <input type="text" placeholder="Email" class="loginInput" id="loginEmail" name = "loginEmail">
+                <input type="password" placeholder="Senha" class="loginInput" id="loginPassword" name="loginPassword">
             </div>
 
             <div>
@@ -34,5 +34,6 @@
     </div>
 
 </body>
+
 
 </html>

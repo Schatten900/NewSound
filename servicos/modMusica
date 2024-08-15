@@ -1,0 +1,20 @@
+from dominios.music import Cancao
+
+class CntrlSPlaylist:
+    def __init__(self):
+        self.music = Cancao()
+
+    def adicionar(self,idPlaylist):
+        pass
+
+    def remover(self,idPlaylist):
+        pass
+
+    def editar(self,idPlaylist):
+        pass
+
+    def pesquisar(self,idPlaylist):
+        pass
+
+class ContainerPlaylist:
+    pass

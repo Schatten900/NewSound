@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+
+body {
+    background-color:rgba(26, 26, 26, 0.911);
+    margin: 0px;
+    scrollbar-width: thin; 
+}
+
+/* Scroll da pagina */
+::-webkit-scrollbar {
+    width: 8px; 
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(26, 26, 26, 0.911); 
+    border-radius: 50px; 
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgb(0, 255, 21); 
+    border-radius: 10px; 
+    border: 0px;
+}
+
+#ContainerPlaylist {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+#nomePlaylistTitulo {
+    font-family: "Oswald", sans-serif;
+    font-size: 50px;
+    color: white;
+
+}
+
+#embaralharPlaylistButtom {
+    font-family: "Oswald", sans-serif;
+    font-size: 20px;
+    width: 180px;
+    height: 35px;
+    color: black;
+    background-color: rgb(0, 255, 21);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.3ms ease, box-shadow 0.3ms ease;
+}
+
+#embaralharPlaylistButtom:hover {
+    transform: scale(1.1, 1.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 3);
+}
+
+#addMusicPlaylistButtom {
+    font-family: "Oswald", sans-serif;
+    font-size: 15px;
+    width: 150px;
+    height: 30px;
+    color: white;
+    background-color: rgb(78, 78, 78);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.3ms ease, box-shadow 0.3ms ease;
+}
+
+#addMusicPlaylistButtom:hover {
+    transform: scale(1.1, 1.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 5);
+}
+
+#musicPlaylistSalvas {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#musicBD {
+    width: 400px;
+    height: 60px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: rgba(26, 26, 26, 0.911);
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.3ms ease, box-shadow 0.3ms ease;
+}
+
+#musicBD:hover {
+    transform: scale(1.05, 1.05);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 3);
+}
+
+#containerInfoMusicBD {
+    padding-left: 10px;
+    padding-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+#nameMusic {
+    font-family: "Oswald", sans-serif;
+    font-size: 20px;
+    color: white;
+}
+
+#nameArtistaMusic {
+    font-family: "Oswald", sans-serif;
+    font-size: 15px;
+    color: rgb(190, 190, 190);
+}
+
+.circleButtom {
+    background-color: rgba(26, 26, 26, 0.911);
+    color: white;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+}
+
+.circleButtom:hover {
+    background-color: rgba(68, 68, 68, 0.911);
+}

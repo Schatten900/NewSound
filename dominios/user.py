@@ -118,6 +118,8 @@ class Usuario:
         self.nome = Nome()
         self.senha = Senha()
         self.email = Email()
+        self.id = 0
+        #usar auto-incremento para o id no bd
 
     def getNome(self):
         return self.nome
@@ -128,17 +130,16 @@ class Usuario:
     def getEmail(self):
         return self.email
     
-    def setUsuario(self,nome,email,senha):
+    def getId(self):
+        return self.id
+    
+    def setUsuario(self,nome,email,senha,id):
         try:
             self.getNome().set(nome)
             self.getEmail().set(email)
             self.getSenha().set(senha)
+            self.id = id
         except Exception as e:
-            print("Não foi possivel conectar a conta")
+            print(f"Não foi possivel conectar a conta: {e}")
 
 
-user = Usuario()
-user.setUsuario("Carlos Caua","xxxthreshxxx@gmail.com","122410")
-print(user.getEmail().get())
-print(user.getNome().get())
-print(user.getSenha().get())
