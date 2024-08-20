@@ -4,30 +4,41 @@ class CntrlSPlaylist:
     def __init__(self):
         self.music = Cancao()
 
-    def adicionarMusica(self,musica,artista,idUsuario):
+    def adicionarMusica(self,musica,artista,idPlaylist):
+        #adiciona uma musica aquela playlist
         pass
 
-    def removerMusica(self,musica,artista,idUsuario):
+    def removerMusica(self,musica,artista,idPlaylist):
+        #remove a musica daquela playlist
         pass
 
-    def pesquisarMusica(self,idUsuario):
+    def pesquisarMusicas(self,idPlaylist):
+        #pesquisar todas as musicas vinculadas aquela playlist
         pass
 
-    def adicionarPlaylist(self,idUsuario):
+    def lerPlaylist(self,idPlaylist):
+        #retorna todos os atributos da tabela playlist
         pass
 
-    def editarPlaylist(self,idUsuario):
+    def adicionarPlaylist(self,idUsuario,idPlaylist):
+        #Cria uma playlist na lista de playlists do usuario
         pass
 
-    def removerPlaylist(self,idUsuario):
+    def editarPlaylist(self,idUsuario,idPlaylist):
+        #Permite editar a playlist do usuario (nome,miniatura etc)
         pass
 
-    #pesquisar playlists criadas pelo usuario
+    def removerPlaylist(self,idUsuario,idPlaylist):
+        #Remove da lista de playlists do usuario a playlist escolhida
+        pass
+
     def pesquisarPlaylist(self,idUsuario):
+        #lista todas as playlists criadas pelo usuario
         pass
 
-    #pesquisar playlists salvas pelo usuario
+    #Essa funcao pode ser removida se não for necessaria
     def pesquisarPlaylistSaves(self,idUsuario):
+        #pesquisar playlists salvas pelo usuario(não foram criadas por ele)
         pass
 
 #Classe que manipula o banco de dados

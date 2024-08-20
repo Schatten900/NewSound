@@ -1,13 +1,12 @@
-from flask import Flask, request, render_template, jsonify,redirect,url_for, session
+from flask import Flask, request, render_template, jsonify,url_for, session
 from servicos.modContas import CntrlSConta
 from servicos.modMusica import CntrlSPlaylist
 
 app = Flask(__name__)
 
-@app.route("/")
-def home():
-    pass
+###########   Funcionalidades da conta ######################
 
+#Carlos
 @app.route("/login", methods=["GET","POST"])
 def login():
     #Pegar os dados do usuario e checar
@@ -17,6 +16,10 @@ def login():
         controladora = CntrlSConta()
         user = controladora.logar(email,senha)
         if user:
+            session["userID"] = user.getId()
+            session["nomeUser"] = user.getNome()
+            session["emailUser"] = user.getEmail()
+            session["passwordUser"] = user.getSenha()
             return jsonify({"message":"login concluido","status":"success","redirect":url_for('home')}),200
         else:
             return jsonify({"message":"falha ao logar","status":"fail"}),401
@@ -29,7 +32,7 @@ def login():
     else:
         return jsonify({"message":"Ação invalida","status":"fail"}),401
     
-
+#Carlos
 @app.route("/register", methods=["GET","POST"])
 def registrar():
     #Pegar os dados do usuario e checar
@@ -41,10 +44,14 @@ def registrar():
         controladora = CntrlSConta()
         user = controladora.cadastrar(nome,email,senha,confirm)
         if user:
-            session["userID"] = id
+            session["userID"] = user.getId()
+            session["nomeUser"] = user.getNome()
+            session["emailUser"] = user.getEmail()
+            session["passwordUser"] = user.getSenha()
             return jsonify({"message":"sucesso ao registrar","status":"success","redirect":url_for('home')}),200
         else:
             return jsonify({"message":"falha ao registrar usuario","status":"fail"}),401
+        
     
     #Mostrar a tela de registro
     elif request.method == "GET":
@@ -52,31 +59,107 @@ def registrar():
     #Caso aconteça algo inesperado
     else:
         return jsonify({"message":"Acao invalida","status":"fail"}),401
+    
+#Pagina do usuario onde ele pode fazer o CRUD
+#Carlos 
+@app.route("Usuario")
+def UsuarioPage():
+    pass
+
+###########   Funcionalidades da aplicação (musica) ######################
+
+#HomePage do site
+#Ricardo
+@app.route("/")
+def home():
+    pass
 
 
-@app.route("/playlist",methods=["GET","POST"])
-def playlist():
+#Ricardo
+@app.route("/navegar")
+def navegarMusicas():
+    #endpoint para podermos navegar pelos generos das musicas
+    pass
+
+#################################################
+
+#Logica a ser desenvolvida em controladora e redirecionamento 
+#Ricardo/Carlos
+@app.route("/playlistUsuario")
+def PlaylistUsuario():
+    #Fazer select do banco de dados das playlist criadas pelo usuario
+    #CRUD Completo
+    idUsuario = session["userID"]
+    controladora = CntrlSPlaylist()
+    #playlists = controladora.pesquisarPlaylist(idUsuario)
+    playlists = True
+    #criar o redirecionamento para o PlaylistUsuario/idPlaylist
+
+    return render_template("playlistSaves.html",Playlist=playlists)
+
+#Carlos
+@app.route("/playlistUsuario/{id_playlist}",methods=["GET","POST"])
+def playlistUsuario(id_playlist):
+    #Adicao, seleção e remoção  relacionadas a uma playlist criada pelo usuario
     if request.method == "POST":
+        controladora = CntrlSPlaylist()
         nameMusic = request.form["musicaInput"]
         nameArtista = request.form["artistaInput"]
-        controladora = CntrlSPlaylist
-        #id = session["userID"]
-        #controladora.adicionarMusica(nameMusic,nameArtista,id)
-        #logica para adicionar na playlist se nao houver na playlist
+        idUsuario = session["userID"]
+
+        if request.action == "add":
+            pass
+            #adicionar musica na playlist
+            #controladora.adicionarMusica(nameMusic,nameArtista,id)
+        else:
+            #remover musica da playlist
+            #controladora.removerMusica(nameMusic,nameArtista,id)
+            pass
     else:
         #Fazer select do banco de dados
-        music = ("Camisado")
+        musicasPlaylist = controladora.pesquisarMusicas(id_playlist)
         title = "Rock"
-        return render_template("playlist.html",Musics=music,Title=title)
+        return render_template("playlist.html",MusicasPlaylist=musicasPlaylist,Title=title)
     
-@app.route("/playlist/saves")
-def playlistSaves():
-    #Fazer select do banco de dados das playlist salvas pelo usuario
-    #controladora = CntrlSPlaylist()
+############################################    
 
-    music = ("Camisado")
-    title = "Rock"
-    return render_template("playlistSaves.html",Musics=music,Title=title)
+#Ricardo
+@app.route("/album")
+def albumPage():
+    #listar os albuns da aplicacao (todos)
+    pass
+
+#Ricardo
+@app.route("/album/{idAlbum}")
+def albumMusicas(idAlbum):
+    #listar todas as musicas vinculadas à aquele album
+    #Somente seleção
+    pass
+
+#Ricardo
+#Esse endpoint fica a seu criterio se é necessario ou não
+@app.route("/albumSalvos")
+def albumSalvos():
+    #listar todos os albuns salvos pelo usuario
+    #Crud de adição,seleção e remoção
+    #Pode fazer o redirecionamento para album/idAlbum ao ser clicado
+    pass
+
+###############################################################
+
+#Carlos
+#Estou pensando em criar um endpoint para artista 
+@app.route("/artista")
+def artistaPage():
+    #Seleção de artistas salvas na aplicação
+    pass
+
+#Carlos
+#Informações do artista escolhido, como albuns(pode redirecionar para pagina de album) e hits do artista
+@app.route("/artista/{idArtista}")
+def artistaPageSongs(idArtista):
+    #Selecao de albuns vinculados ao artista, hits
+    pass
 
 if __name__ == "__main__":
     app.run(debug=True, port=8000)
