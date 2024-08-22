@@ -1,8 +1,13 @@
-from flask import Flask, request, render_template, jsonify,url_for, session
+from flask import Flask, request, render_template, jsonify,url_for, session, redirect
+#from flask_session import Session
 from servicos.modContas import CntrlSConta
 from servicos.modMusica import CntrlSPlaylist
 
 app = Flask(__name__)
+
+#app.config["SESSION_PERMANENT"] = False     #Adiciona timeout padrão pra uma seção
+#app.config["SESSION_TYPE"] = "filesystem"   
+#Session(app)
 
 ###########   Funcionalidades da conta ######################
 
@@ -20,6 +25,9 @@ def login():
             session["nomeUser"] = user.getNome()
             session["emailUser"] = user.getEmail()
             session["passwordUser"] = user.getSenha()
+
+            #session['authenticated'] = True
+
             return jsonify({"message":"login concluido","status":"success","redirect":url_for('home')}),200
         else:
             return jsonify({"message":"falha ao logar","status":"fail"}),401
@@ -62,7 +70,7 @@ def registrar():
     
 #Pagina do usuario onde ele pode fazer o CRUD
 #Carlos 
-@app.route("Usuario")
+@app.route("/Usuario")
 def UsuarioPage():
     pass
 
@@ -72,7 +80,26 @@ def UsuarioPage():
 #Ricardo
 @app.route("/")
 def home():
-    pass
+    return redirect(url_for('home_redirect'))
+
+@app.route("/home", methods=["GET", "POST"])
+def home_redirect():
+    if request.method == "POST":
+        action = request.form.get("action")
+        
+        if action == "login":
+            print("\n>>> Teste no Login\n")
+            return redirect(url_for('login'))
+        elif action == "register":
+            return redirect(url_for('registrar'))
+        elif action == "playlist":
+            if 'userID' in session and session['userID'] is not None:
+                return redirect(url_for('playlistUsuario'))
+            else:
+                return redirect(url_for('login'))
+
+
+    return render_template("home.html")
 
 
 #Ricardo
