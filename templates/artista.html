@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{url_for('static',filename='styles/artistas.css')}}" rel="stylesheet">
+    <title>Artistas</title>
+</head>
+
+<body>
+    <div id="ContainerArtistas">
+        <div>
+            <label id="ArtistaTitulo"> Artistas </label>
+        </div>
+
+        <main id="ArtistasLista">
+            {% for artista in Artistas %}
+            <div id="artistaBD">
+                <div id="containerInfoArtista">
+                    <img src="{{artista[1]}}" id="capaArtista">
+                    <label id="nameArtista">{{artista[0]}}</label>
+                </div>
+            </div>
+            {% endfor %}
+        </main>
+    </div>
+
+</body>
+
+</html>

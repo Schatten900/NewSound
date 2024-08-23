@@ -20,12 +20,15 @@
             <div id="registerField">
                 <input type="text" placeholder="Nome" class="loginInput" id="registerNome" name="registerNome">
                 <input type="email" placeholder="Email" class="loginInput" id="registerEmail" name="registerEmail">
-                <input type="password" placeholder="Senha" class="loginInput" id="registerPassword" name="registerPassword">
-                <input type="password" placeholder="Confirme a Senha" class="loginInput" id="registerConfirm" name="registerConfirm">
+                <input type="password" placeholder="Senha" class="loginInput" id="registerPassword"
+                    name="registerPassword">
+                <input type="password" placeholder="Confirme a Senha" class="loginInput" id="registerConfirm"
+                    name="registerConfirm">
             </div>
 
             <div>
-                <button id="registerButtom" class="enterButtom">Register</button>
+                <button id="registerButtom" class="enterButtom" onclick="Registrar(event)"
+                    type="button">Register</button>
             </div>
 
             <div>
@@ -35,7 +38,7 @@
             </div>
         </form>
     </div>
-
+    <script src="{{url_for('static',filename='javascript/registrar.js')}}"></script>
 </body>
 
 </html>

@@ -1,4 +1,5 @@
-function Login(){
+function Login(event){
+    event.preventDefault();
     const email = document.getElementById("loginEmail").value;
     const senha = document.getElementById("loginPassword").value;
 
@@ -10,7 +11,7 @@ function Login(){
         email:email,
         senha:senha
     };
-
+    loginUrl = `http://${window.location.host}/login`
     fetch(loginUrl,{
         method:"POST",
         headers:{

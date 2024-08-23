@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link href="{{ url_for('static', filename='styles/home.css') }}" rel="stylesheet">
+</head>
+
+<body>
+    <div id="homeContainer">
+        <div id="homeTitle">Bem-vindo ao Yfitops</div>
+
+        <div class="homeButtonContainer">
+            <form action="/home" method="post" style="display:inline;">
+                <input type="hidden" name="action" value="login">
+                <button class="homeButton" type="submit">Login</button>
+            </form>
+            <form action="/home" method="post" style="display:inline;">
+                <input type="hidden" name="action" value="register">
+                <button class="homeButton" type="submit">Registrar</button>
+            </form>
+            <form action="/home" method="post" style="display:inline;">
+                <input type="hidden" name="action" value="playlist">
+                <button class="homeButton" type="submit">Playlists</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

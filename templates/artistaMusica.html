@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{url_for('static',filename='styles/artistasAlbum.css')}}" rel="stylesheet">
+    <title>ArtistaMusicas</title>
+</head>
+
+<body>
+    <div id="ContainerAlbumArtistas">
+        <div>
+            <label id="ArtistaTitulo"> {{informacoes[0][0]}} </label>
+        </div>
+
+        <main id="ArtistaAlbumLista">
+            {% for info in informacoes %}
+            <div id="albumBD">
+                <div id="containerInfoAlbum">
+                    <img src="{{info[2]}}" id="capaAlbum">
+                    <label id="nameAlbum">{{info[1]}}</label>
+                </div>
+            </div>
+            {% endfor %}
+        </main>
+    </div>
+
+</body>
+
+</html>

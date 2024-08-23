@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static',filename='/styles/usuario.css')}}">
+    <title>Usuario</title>
+</head>
+
+<body>
+    <div id="containerUsuarioActions">
+        <div id="infoUsuario">
+            <img src="{{Usuario[2]}}" alt="capa do usuario" id="capaUsuario">
+            <label id="tituloUsuario">{{Usuario[0]}}</label>
+            <label id="emailUsuario">{{Usuario[1]}}</label>
+        </div>
+        <form method="POST" id=formEditConta enctype="multipart/form-data">
+            <div id="containerEditInfo">
+                <div class="containerFile">
+                    <label for="fileUpload" class="customFileUpload">
+                        Escolha uma imagem
+                    </label>
+                    <input id="fileUpload" type="file" />
+                </div>
+                <input type="text" class="inputEditText" id="nameEdit" placeholder="Nome">
+                <input type="email" class="inputEditText" id="emailEdit" placeholder="Email">
+                <button class="buttomSaveEdit" onclick="SaveEditUser(event)">Salvar</button>
+            </div>
+        </form>
+        
+        <form id="formUsuarioActions" enctype="multipart/form-data">
+            <div>
+                <button id="editarContaButtom" class="usuarioFormButtom" onclick="editUser(event)">Editar conta</button>
+            </div>
+
+            <div>
+                <button id="excluirContaButtom" class="usuarioFormButtom" onclick="Redirecionar(event,'excluir')">Excluir conta</button>
+            </div>
+            <div>
+                <button id="playlistCreationButtom" class="usuarioFormButtom" onclick="Redirecionar(event,'playlist')">Playlists criadas</button>
+            </div>
+            <div>
+                <button id="musicSalvaButtom" class="usuarioFormButtom" onclick="Redirecionar(event,'musicas')">Musicas salvas</button>
+            </div>
+        </form>
+    </div>
+    <script src="{{url_for('static',filename='javascript/usuarioForm.js')}}"></script>
+</body>
+
+</html>

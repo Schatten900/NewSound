@@ -1,8 +1,14 @@
-from flask import Flask, request, render_template, jsonify,url_for, session
+from flask import Flask, request, render_template, jsonify,url_for, session, redirect
 from servicos.modContas import CntrlSConta
 from servicos.modMusica import CntrlSPlaylist
+from dotenv import load_dotenv
+import os
+import base64
 
 app = Flask(__name__)
+load_dotenv()
+#carregar os dados protegidos na .env
+app.secret_key = os.getenv("FLASK_KEY")
 
 ###########   Funcionalidades da conta ######################
 
@@ -10,9 +16,11 @@ app = Flask(__name__)
 @app.route("/login", methods=["GET","POST"])
 def login():
     #Pegar os dados do usuario e checar
+
     if request.method == "POST":
-        email = request.form['loginEmail']
-        senha = request.form['loginPassword']
+        data = request.json
+        email = data.get("email")
+        senha = data.get("senha")
         controladora = CntrlSConta()
         user = controladora.logar(email,senha)
         if user:
@@ -37,6 +45,11 @@ def login():
 def registrar():
     #Pegar os dados do usuario e checar
     if request.method == "POST":
+        data = request.json
+        nome = data.get("nome")
+        email = data.get("email")
+        senha = data.get("senha")
+        confirm = data.get("confirm")
         nome = request.form['registerNome']
         email = request.form['registerEmail']
         senha = request.form['registerPassword']
@@ -62,9 +75,43 @@ def registrar():
     
 #Pagina do usuario onde ele pode fazer o CRUD
 #Carlos 
-@app.route("Usuario")
+@app.route("/usuario", methods=["GET","POST"])
 def UsuarioPage():
-    pass
+    if request.method == "POST":
+        action = request.form.get("action")
+        if action == "edit":
+            nome = request.form.get("nome")
+            email = request.form.get("email")
+            imagem = request.files.get("imagem")
+            dicionario = {}
+            if nome:
+                dicionario["nome"] = nome
+            if email:
+                dicionario["email"] = email
+            if imagem:
+                imagem_blob = imagem.read()
+                dicionario["imagem"] = imagem_blob
+
+            #print(dicionario)
+            #logica para receber dicionario e editar o usuario no banco de dados
+            return jsonify({"message":"Edição valida","status":"success","redirect":url_for("UsuarioPage")}),200
+        elif action == "excluir":
+            #logica para excluir usuario do banco de dados
+            return jsonify({"message":"Edição valida","status":"success","redirect":url_for("UsuarioPage")}),200
+        
+        elif action == "playlist":
+            #Redirecionar para playlists do usuario
+            return jsonify({"message":"Edição valida","status":"success","redirect":url_for("PlaylistCriadas")}),200
+
+        elif action == "musicas":
+            #Redirecionar para musicas salvas pelo usuario
+            return jsonify({"message":"Edição valida","status":"success","redirect":url_for("MusicasSalvas")}),200
+        else:
+            return jsonify({"message":"Acao invalida","status":"fail"}),401
+    else:
+        #Metodo GET, mostrar usuario na tela
+        usuario = ("Rodolfo","teste@gmail.com","https://via.placeholder.com/150")
+        return render_template("usuario.html",Usuario=usuario)
 
 ###########   Funcionalidades da aplicação (musica) ######################
 
@@ -72,8 +119,25 @@ def UsuarioPage():
 #Ricardo
 @app.route("/")
 def home():
-    pass
+    return redirect(url_for('home_redirect'))
 
+@app.route("/home", methods=["GET", "POST"])
+def home_redirect():
+    #Usuario escolhe a funcionalidade que quer
+    if request.method == "POST":
+        action = request.form.get("action")
+        if action == "login":
+            return redirect(url_for('login'))
+        elif action == "register":
+            return redirect(url_for('registrar'))
+        elif action == "playlist":
+            if 'userID' in session and session['userID'] is not None:
+                return redirect(url_for('playlistUsuario'))
+            else:
+                return redirect(url_for('login'))
+    else:
+        #Mostrar homepage para o usuario
+        return render_template("home.html")
 
 #Ricardo
 @app.route("/navegar")
@@ -81,24 +145,35 @@ def navegarMusicas():
     #endpoint para podermos navegar pelos generos das musicas
     pass
 
+#Carlos
+@app.route("/MusicasSalvas")
+def MusicasSalvas():
+    #endpoint para navegar pelas musicas salvas pelo usuario
+    pass
+
 #################################################
 
 #Logica a ser desenvolvida em controladora e redirecionamento 
 #Ricardo/Carlos
-@app.route("/playlistUsuario")
-def PlaylistUsuario():
+@app.route("/playlistUser")
+def PlaylistCriadas():
     #Fazer select do banco de dados das playlist criadas pelo usuario
     #CRUD Completo
-    idUsuario = session["userID"]
-    controladora = CntrlSPlaylist()
-    #playlists = controladora.pesquisarPlaylist(idUsuario)
-    playlists = True
+    #idUsuario = session["userID"]
+    #controladora = CntrlSPlaylist()
+    #playlists = controladora.pesquisarPlaylist(idUsuario)e
     #criar o redirecionamento para o PlaylistUsuario/idPlaylist
+    if request.method == "POST":
+        #logica pra pegar o id
+        render_template("playlistUser.html")
+        
+    else:
+        playlist = [("Panic at Disco","https://via.placeholder.com/150"),("Panic at Disco","https://via.placeholder.com/150")]
 
-    return render_template("playlistSaves.html",Playlist=playlists)
+    return render_template("playlistCreation.html",Playlist=playlist)
 
 #Carlos
-@app.route("/playlistUsuario/{id_playlist}",methods=["GET","POST"])
+@app.route("/playlistUser/{id_playlist}",methods=["GET","POST"])
 def playlistUsuario(id_playlist):
     #Adicao, seleção e remoção  relacionadas a uma playlist criada pelo usuario
     if request.method == "POST":
@@ -110,56 +185,46 @@ def playlistUsuario(id_playlist):
         if request.action == "add":
             pass
             #adicionar musica na playlist
-            #controladora.adicionarMusica(nameMusic,nameArtista,id)
+            #controladora.adicionarMusica(nameMusic,nameArtista,id_playlist)
         else:
             #remover musica da playlist
-            #controladora.removerMusica(nameMusic,nameArtista,id)
+            #controladora.removerMusica(nameMusic,nameArtista,id_playlist)
             pass
     else:
         #Fazer select do banco de dados
         musicasPlaylist = controladora.pesquisarMusicas(id_playlist)
         title = "Rock"
-        return render_template("playlist.html",MusicasPlaylist=musicasPlaylist,Title=title)
+        return render_template("playlistUser.html",MusicasPlaylist=musicasPlaylist,Title=title)
     
 ############################################    
-
-#Ricardo
-@app.route("/album")
-def albumPage():
-    #listar os albuns da aplicacao (todos)
-    pass
 
 #Ricardo
 @app.route("/album/{idAlbum}")
 def albumMusicas(idAlbum):
     #listar todas as musicas vinculadas à aquele album
-    #Somente seleção
-    pass
-
-#Ricardo
-#Esse endpoint fica a seu criterio se é necessario ou não
-@app.route("/albumSalvos")
-def albumSalvos():
-    #listar todos os albuns salvos pelo usuario
-    #Crud de adição,seleção e remoção
-    #Pode fazer o redirecionamento para album/idAlbum ao ser clicado
+    #Somente seleção ate então
     pass
 
 ###############################################################
 
-#Carlos
-#Estou pensando em criar um endpoint para artista 
+#Carlos 
 @app.route("/artista")
 def artistaPage():
     #Seleção de artistas salvas na aplicação
-    pass
+    #controladora = cntrlSArtista()
+    #artistas = controladora.pesquisarArtistas()
+    artistas = [("Panic at Disco", "https://via.placeholder.com/150")]
+    return render_template("artista.html",Artistas=artistas)
 
 #Carlos
-#Informações do artista escolhido, como albuns(pode redirecionar para pagina de album) e hits do artista
 @app.route("/artista/{idArtista}")
 def artistaPageSongs(idArtista):
-    #Selecao de albuns vinculados ao artista, hits
-    pass
+    #Selecao de albuns vinculados ao artista de idArtista
+    #Logica para pesquisar albuns do artista
+    
+    #Exemplo
+    info = [("Panic at Disco","Album2", "https://via.placeholder.com/150"),("Panic at Disco","Album1","https://via.placeholder.com/150")]
+    return render_template("artistaMusica.html",informacoes=info)
 
 if __name__ == "__main__":
     app.run(debug=True, port=8000)

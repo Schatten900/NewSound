@@ -1,4 +1,5 @@
-function Registrar() {
+function Registrar(event) {
+    event.preventDefault();
     const nome = document.getElementById("registerNome").value;
     const email = document.getElementById("registerEmail").value;
     const senha = document.getElementById("registerPassword").value;
@@ -13,7 +14,7 @@ function Registrar() {
         return;
     }
 
-    let registerUrl = `https://${window.location.host}/register`
+    let registerUrl = `http://${window.location.host}/register`
     messageData = {
         nome: nome,
         email: email,

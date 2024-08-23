@@ -1,10 +1,9 @@
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
-
+from pygame import mixer
 from dominios.user import dominio
 from dotenv import load_dotenv
 import os
-
 
 dotenv_path='.env'
 load_dotenv(dotenv_path=dotenv_path)
@@ -42,6 +41,7 @@ class Cancao:
     def __init__(self):
         self.artista = Artista()
         self.musica = Musica()
+        self.capa = ""
 
     def getArtista(self):
         return self.artista
@@ -61,4 +61,13 @@ class Cancao:
             self.musica.set(musica)
             self.artista.set(artista)
 
+    def pegarCancao(self,idMusica):
+        #Funcao para pegar o .mp3 pelo id(click do usuario)
+        pass
 
+    def tocarPlay(self,arquivo):
+        #arquivo é o .mp3 pego no banco de dados
+        mixer.init()
+        mixer.music.load(arquivo)
+        mixer.music.play()
+        sair = input("feliz demais")
