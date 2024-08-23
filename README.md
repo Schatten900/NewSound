@@ -1,7 +1,3 @@
-# TrabalhoBD
-site hospedado(ainda vai ser) no Heroku;
-banco de dados configurado no heroku;
-Utilizaremos Postgre(Mais facil de conectar no Heroku);
 
 Funcionalidades:
 1) Cadastro do usuario (Carlos)
@@ -35,5 +31,9 @@ Funcionalidades:
 6) Navegar pelas musicas separadas por genero
  - Select em musicas(entidade) agrupando por genero e ordem alfabetica
  - Mostrar quem é o artista da musica ordenada
+ - 
+7) Criar stored procedure para listar informações como musicas da
+tabela de album, playlist ou salvas, de forma dinamica tipo:
+listar (nome da tabela, idUsuario)
 
 Pode mudar a vontade 

@@ -16,9 +16,11 @@ body {
     0% {
         background-position: 50% 30%;
     }
+
     50% {
         background-position: 50% 75%;
     }
+
     100% {
         background-position: 50% 30%;
     }

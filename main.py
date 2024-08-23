@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify,url_for, session, redirect
+from flask import Flask, request, render_template, jsonify,url_for, session,redirect
 from servicos.modContas import CntrlSConta
 from servicos.modMusica import CntrlSPlaylist
 from dotenv import load_dotenv
@@ -6,17 +6,13 @@ import os
 import base64
 
 app = Flask(__name__)
-load_dotenv()
-#carregar os dados protegidos na .env
-app.secret_key = os.getenv("FLASK_KEY")
 
 ###########   Funcionalidades da conta ######################
 
 #Carlos
 @app.route("/login", methods=["GET","POST"])
-def login():
+def Login():
     #Pegar os dados do usuario e checar
-
     if request.method == "POST":
         data = request.json
         email = data.get("email")
@@ -28,10 +24,9 @@ def login():
             session["nomeUser"] = user.getNome()
             session["emailUser"] = user.getEmail()
             session["passwordUser"] = user.getSenha()
-            return jsonify({"message":"login concluido","status":"success","redirect":url_for('home')}),200
+            return jsonify({"message":"login concluido","status":"success","redirect":url_for('Home')}),200
         else:
             return jsonify({"message":"falha ao logar","status":"fail"}),401
-    
     #Mostrar a tela de registro
     elif request.method == "GET":
         return render_template("login.html")
@@ -42,7 +37,7 @@ def login():
     
 #Carlos
 @app.route("/register", methods=["GET","POST"])
-def registrar():
+def Registrar():
     #Pegar os dados do usuario e checar
     if request.method == "POST":
         data = request.json
@@ -61,7 +56,7 @@ def registrar():
             session["nomeUser"] = user.getNome()
             session["emailUser"] = user.getEmail()
             session["passwordUser"] = user.getSenha()
-            return jsonify({"message":"sucesso ao registrar","status":"success","redirect":url_for('home')}),200
+            return jsonify({"message":"sucesso ao registrar","status":"success","redirect":url_for('Home')}),200
         else:
             return jsonify({"message":"falha ao registrar usuario","status":"fail"}),401
         
@@ -75,7 +70,7 @@ def registrar():
     
 #Pagina do usuario onde ele pode fazer o CRUD
 #Carlos 
-@app.route("/usuario", methods=["GET","POST"])
+@app.route("/usuario")
 def UsuarioPage():
     if request.method == "POST":
         action = request.form.get("action")
@@ -118,31 +113,36 @@ def UsuarioPage():
 #HomePage do site
 #Ricardo
 @app.route("/")
-def home():
-    return redirect(url_for('home_redirect'))
+def Home():
+    return redirect(url_for('HomeRedirect'))
 
 @app.route("/home", methods=["GET", "POST"])
-def home_redirect():
-    #Usuario escolhe a funcionalidade que quer
+def HomeRedirect():
     if request.method == "POST":
         action = request.form.get("action")
         if action == "login":
-            return redirect(url_for('login'))
-        elif action == "register":
-            return redirect(url_for('registrar'))
-        elif action == "playlist":
+            return redirect(url_for('Login'))
+        elif action == "artistas":
             if 'userID' in session and session['userID'] is not None:
-                return redirect(url_for('playlistUsuario'))
+                return redirect(url_for('ArtistasPage'))
             else:
-                return redirect(url_for('login'))
-    else:
-        #Mostrar homepage para o usuario
-        return render_template("home.html")
+                return redirect(url_for('Login'))
+        
+        elif action == "navegar":
+            if 'userID' in session and session['userID'] is not None:
+                return redirect(url_for('NavegarPage'))
+            else:
+                return redirect(url_for('Login'))
 
-#Ricardo
+        elif action == "usuario":
+            if 'userID' in session and session['userID'] is not None:
+                return redirect(url_for('UsuarioPage'))
+            else:
+                return redirect(url_for('Login'))
+    return render_template("home.html")
+
 @app.route("/navegar")
-def navegarMusicas():
-    #endpoint para podermos navegar pelos generos das musicas
+def NavegarPage():
     pass
 
 #Carlos
@@ -200,7 +200,7 @@ def playlistUsuario(id_playlist):
 
 #Ricardo
 @app.route("/album/{idAlbum}")
-def albumMusicas(idAlbum):
+def AlbumMusicas(idAlbum):
     #listar todas as musicas vinculadas à aquele album
     #Somente seleção ate então
     pass
@@ -209,7 +209,7 @@ def albumMusicas(idAlbum):
 
 #Carlos 
 @app.route("/artista")
-def artistaPage():
+def ArtistasPage():
     #Seleção de artistas salvas na aplicação
     #controladora = cntrlSArtista()
     #artistas = controladora.pesquisarArtistas()
@@ -218,10 +218,9 @@ def artistaPage():
 
 #Carlos
 @app.route("/artista/{idArtista}")
-def artistaPageSongs(idArtista):
+def ArtistasPageSongs(idArtista):
     #Selecao de albuns vinculados ao artista de idArtista
     #Logica para pesquisar albuns do artista
-    
     #Exemplo
     info = [("Panic at Disco","Album2", "https://via.placeholder.com/150"),("Panic at Disco","Album1","https://via.placeholder.com/150")]
     return render_template("artistaMusica.html",informacoes=info)
