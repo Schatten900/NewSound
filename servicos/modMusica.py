@@ -4,7 +4,7 @@ class CntrlSPlaylist:
     def __init__(self):
         self.music = Cancao()
 
-    def adicionarMusica(self,musica,artista,idPlaylist):
+    def adicionarMusica(self,musicaNome,artista,idPlaylist,musica=None):
         #adiciona uma musica aquela playlist
         pass
 

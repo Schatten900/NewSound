@@ -74,6 +74,7 @@ def Registrar():
 def UsuarioPage():
     if request.method == "POST":
         action = request.form.get("action")
+        print(action)
         if action == "edit":
             nome = request.form.get("nome")
             email = request.form.get("email")
@@ -92,15 +93,15 @@ def UsuarioPage():
             return jsonify({"message":"Edição valida","status":"success","redirect":url_for("UsuarioPage")}),200
         elif action == "excluir":
             #logica para excluir usuario do banco de dados
-            return jsonify({"message":"Edição valida","status":"success","redirect":url_for("UsuarioPage")}),200
+            return jsonify({"message":"exclusao valida","status":"success","redirect":url_for("UsuarioPage")}),200
         
         elif action == "playlist":
             #Redirecionar para playlists do usuario
-            return jsonify({"message":"Edição valida","status":"success","redirect":url_for("PlaylistCriadas")}),200
+            return jsonify({"message":"redirecionando playlist","status":"success","redirect":url_for("PlaylistCriadas")}),200
 
         elif action == "musicas":
             #Redirecionar para musicas salvas pelo usuario
-            return jsonify({"message":"Edição valida","status":"success","redirect":url_for("MusicasSalvas")}),200
+            return jsonify({"message":"redirecionando musicas","status":"success","redirect":url_for("MusicasSalvas")}),200
         else:
             return jsonify({"message":"Acao invalida","status":"fail"}),401
     else:
@@ -146,10 +147,33 @@ def NavegarPage():
     pass
 
 #Carlos
-@app.route("/MusicasSalvas")
+@app.route("/musicasSalvas",methods=["GET","POST"])
 def MusicasSalvas():
     #endpoint para navegar pelas musicas salvas pelo usuario
-    pass
+    #Fazer select do banco de dados
+    if request.method == "POST":
+        action = request.form.get("action")
+        nameMusic = request.form.get("musicaName")
+        nameArtista = request.form.get("artistaName")
+        if action == "add":
+            musica = request.files.get("musica")
+            idUsuario = session["userID"]
+            if musica:
+                musica_blob = musica.read()
+            #controladora = CntrlSMusica()
+            #Checar se existe a musica no banco de dados
+            #existe = controladora.pesquisarMusica(nameMusic,nameArtista)
+            #if existe:
+                #constroladora.adicionarMusicaUsuario(nameMusic,nameArtista,idUsuario)
+            #else:
+                #adiciona no banco de dados a musica e no musicas Salvas do usuario
+                #controladora.adicionarMusica(nameMusic,nameArtista,idUsuario,musica)
+                #constroladora.adicionarMusicaUsuario(nameMusic,nameArtista,idUsuario)
+
+    else: 
+        #musicasPlaylist = controladora.pesquisarMusicas(idUSuario)
+        musicas = [("Euforia","Teste1"),("Ceu azul","Charlie Brown"),("Rise","Katty")]
+        return render_template("musicasSalvas.html",Musicas=musicas)
 
 #################################################
 
@@ -164,9 +188,8 @@ def PlaylistCriadas():
     #playlists = controladora.pesquisarPlaylist(idUsuario)e
     #criar o redirecionamento para o PlaylistUsuario/idPlaylist
     if request.method == "POST":
-        #logica pra pegar o id
+        #logica pra pegar o id pelo click na musica
         render_template("playlistUser.html")
-        
     else:
         playlist = [("Panic at Disco","https://via.placeholder.com/150"),("Panic at Disco","https://via.placeholder.com/150")]
 
@@ -178,23 +201,29 @@ def playlistUsuario(id_playlist):
     #Adicao, seleção e remoção  relacionadas a uma playlist criada pelo usuario
     if request.method == "POST":
         controladora = CntrlSPlaylist()
-        nameMusic = request.form["musicaInput"]
-        nameArtista = request.form["artistaInput"]
+        action = request.form.get("action")
+        nameMusic = request.form.get("musicaName")
+        nameArtista = request.form.get("artistaName")
+        musica = request.files.get("musica")
         idUsuario = session["userID"]
-
-        if request.action == "add":
+        if musica:
+            musica_blob = musica.read()
+        if action == "add":
             pass
             #adicionar musica na playlist
-            #controladora.adicionarMusica(nameMusic,nameArtista,id_playlist)
+            #if musica:
+                #controladora.adicionarMusica(nameMusic,nameArtista,id_playlist,musica_blob)
+            #else:
+                #controladora.adicionarMusica(nameMusic,nameArtista,id_Playlist)
         else:
             #remover musica da playlist
             #controladora.removerMusica(nameMusic,nameArtista,id_playlist)
             pass
     else:
-        #Fazer select do banco de dados
+        #Fazer select do banco de dados, musicas e titulo da playlist
         musicasPlaylist = controladora.pesquisarMusicas(id_playlist)
         title = "Rock"
-        return render_template("playlistUser.html",MusicasPlaylist=musicasPlaylist,Title=title)
+        return render_template("playlistUser.html",MusicasPlaylist=musicasPlaylist,Title=title,idPlaylist=id_playlist)
     
 ############################################    
 
@@ -222,6 +251,7 @@ def ArtistasPageSongs(idArtista):
     #Selecao de albuns vinculados ao artista de idArtista
     #Logica para pesquisar albuns do artista
     #Exemplo
+    #nome do artista,album,imagem
     info = [("Panic at Disco","Album2", "https://via.placeholder.com/150"),("Panic at Disco","Album1","https://via.placeholder.com/150")]
     return render_template("artistaMusica.html",informacoes=info)
 
