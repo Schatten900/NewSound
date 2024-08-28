@@ -1,4 +1,5 @@
 from dominios.user import Usuario,Email,Nome,Senha
+from dominios.bancoDef import executeQuery
 
 #Chamada na camada de apresentação para efetuar o serviço
 class CntrlSConta:
@@ -11,12 +12,7 @@ class CntrlSConta:
     def setConta(self,conta):
         self.user = conta
 
-    def cadastrar(self,nome,email,senha,confirm):
-        if not nome or not email or not senha:
-            return None
-        if senha != confirm:
-            return None
-        
+    def cadastrar(self,nome,email,senha):
         #Checar se os valores sao validos
         emailAux = Email()
         emailAux.set(email)
@@ -36,19 +32,18 @@ class CntrlSConta:
         conta = self.getConta()
         container = ContainerConta()
         conta = container.cadastrar(nome,email,senha)
-        print(nome,email,senha)
-        return conta
+        if conta:
+            return conta
+        else:
+            return None
 
     def logar(self,email,senha):
-        if not email or not senha:
-            return None
-        
         #Checar se os valores sao validos
         emailAux = Email()
         emailAux.set(email)
         if not emailAux.get():
             return None
-
+        
         senhaAux = Senha()
         senhaAux.set(senha)
         if not senhaAux.get():
@@ -56,23 +51,25 @@ class CntrlSConta:
 
         conta = self.getConta()
         container = ContainerConta()
-        container.logar(email,senha)
         conta = container.logar(email,senha)
-        print(email,senha)
-        return conta
+        if conta:
+            return conta
+        return None
 
-    def ler(self):
-        conta = self.getConta()
-        email = conta.getEmail().get()
+    def ler(self,email):
         container = ContainerConta()
-        container.ler(email)
+        existe = container.ler(email)
+        if existe:
+            return existe
+        else:
+            return None
 
     #usar dicionario para poder editar os valores recebidos
-    def editar(self,dicionario):
-        conta = self.getConta()
-        email = conta.getEmail().get()
+    def editar(self,id,dicionario):
         container = ContainerConta()
-        container.editar(email,dicionario)
+        if container.editar(id,dicionario):
+            return True
+        return False
 
     def excluir(self):
         conta = self.getConta()
@@ -84,26 +81,81 @@ class CntrlSConta:
 class ContainerConta:
     def cadastrar(self,nome,email,senha):
         #logica para cadastrar no banco
-        #usar para o id o autoIncrement do SGBD
-        #id = cursor.lastrowid
-        user = Usuario()
-        #user.setUsuario(nome,email,senha,id)
-        return user
+        try:
+            QUERY = """
+            INSERT INTO Usuario (Nome,Senha,Email) VALUES (%s,%s,%s)
+            """
+            params = (nome,senha,email)
+            #pega o id do usuario e faz a insercao em Usuario
+            id = executeQuery(QUERY,params)
+            user = Usuario()
+            user.setUsuario(nome,email,senha,id)
+            if user:
+                return user
+            else:
+                return None
+        except ValueError as e:
+            print(e)
+            return None
 
     def logar(self,email,senha):
         #logica para logar no banco
-        #parametros obtidos pelo select
-        user = Usuario()
-        #user.setUsuario(nome,email,senha,id)
-        return user
+        try:
+            QUERY = """
+                SELECT * FROM Usuario WHERE Email = %s and Senha = %s
+            """
+            params = (email,senha,)
+            existe = executeQuery(QUERY,params)
+            if existe:
+                usuarioDB = existe[0]
+                nome = usuarioDB[1]
+                id = usuarioDB[0]
+                user = Usuario()
+                user.setUsuario(nome,email,senha,id)
+                return user
+            else:
+                return None
+            
+        except ValueError as e:
+            print(e)
+            return None
         
-    def ler(self,email):
-        #logica para ler do banco de dados a conta
-        pass
+    def ler(self,id):
+        QUERY = """
+            SELECT * FROM Usuario WHERE Coduser = %s
+        """
+        params = (id)
+        existe = executeQuery(QUERY,params)
+        if existe:
+            #retorna todas informacoes do usuario
+            return existe[0]
+        else:
+            return None
 
-    def editar(self,email,dicionario):
+    def editar(self,id,dicionario):
         #logica para editar informacoes do usuario no banco
-        pass
+        try:
+            if not self.ler(id):
+                return False
+            query = """
+            UPDATE USUARIO SET 
+            """
+            placeholders = []
+            params = []
+            for chave,valor in dicionario.items():
+                placeholders.append(f"{chave} = %s")
+                params.append(valor)
+
+            query += ", ".join(placeholders)
+            query += " WHERE CodUser = %s "
+            params.append(id)
+            executeQuery(query,tuple(params))
+            return True 
+        
+        except ValueError as e:
+            print(e)
+            return False
+        
 
     def excluir(self,email):
         #logica para excluir conta do usuario no banco

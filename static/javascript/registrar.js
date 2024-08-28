@@ -19,8 +19,7 @@ function Registrar(event) {
         nome: nome,
         email: email,
         senha: senha,
-        confirm: confirm
-    }
+    };
 
     fetch(registerUrl, {
         method: "POST",
@@ -31,7 +30,7 @@ function Registrar(event) {
     })
         .then(response => {
             if (!response.ok)
-                throw new Error(`Http Erro:${response.status}`)
+                throw new Error(`Http Erro:`, response.status)
             return response.json()
         })
         .then(data => {
@@ -39,8 +38,8 @@ function Registrar(event) {
                 window.location.href = data.redirect
             }
             else {
-                window.alert("Alguns dos dados podem estar incorretos")
+                console.log("Houve um erro ao logar: ", data.message)
             }
         })
-        .catch(error => console.error("erro: ", error));
+        .catch(error => console.error("Erro ao buscar os dados do usuario:", error));
 }

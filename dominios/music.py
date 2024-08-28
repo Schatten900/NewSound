@@ -19,7 +19,7 @@ def getSpotifyConnection():
 class Musica(dominio):
     def _validar(self,valor):
         sp = getSpotifyConnection()
-        musicName = valor
+        musicName = valor.lower()
         results = sp.search(q=musicName,type="track",limit=1)
         tracks = results['tracks']['items'][0]
         songName = tracks["name"]
@@ -29,7 +29,7 @@ class Musica(dominio):
 
 class Artista(dominio):
     def _validar(self,valor):
-        artist_name = valor
+        artist_name = valor.lower()
         sp = getSpotifyConnection()
         results = sp.search(q=artist_name,type="artist")
         artist = results["artists"]["items"][0]

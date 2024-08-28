@@ -49,7 +49,10 @@ def executeQuery(query,params=None):
             else:
                 #marca o fim da transacao caso nao seja select
                 db.commit()
-                result = None
+                if query.strip().lower().startswith("insert"):
+                    result = cursor.lastrowid
+                else:
+                    result = None
 
             return result
 

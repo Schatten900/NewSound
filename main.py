@@ -1,11 +1,13 @@
 from flask import Flask, request, render_template, jsonify,url_for, session,redirect
 from servicos.modContas import CntrlSConta
 from servicos.modMusica import CntrlSPlaylist
+from dominios.bancoDef import flaskSecret
 from dotenv import load_dotenv
 import os
 import base64
 
 app = Flask(__name__)
+app.secret_key = flaskSecret
 
 ###########   Funcionalidades da conta ######################
 
@@ -21,9 +23,9 @@ def Login():
         user = controladora.logar(email,senha)
         if user:
             session["userID"] = user.getId()
-            session["nomeUser"] = user.getNome()
-            session["emailUser"] = user.getEmail()
-            session["passwordUser"] = user.getSenha()
+            session["nomeUser"] = user.getNome().get()
+            session["emailUser"] = user.getEmail().get()
+            session["passwordUser"] = user.getSenha().get()
             return jsonify({"message":"login concluido","status":"success","redirect":url_for('Home')}),200
         else:
             return jsonify({"message":"falha ao logar","status":"fail"}),401
@@ -44,19 +46,14 @@ def Registrar():
         nome = data.get("nome")
         email = data.get("email")
         senha = data.get("senha")
-        confirm = data.get("confirm")
-        nome = request.form['registerNome']
-        email = request.form['registerEmail']
-        senha = request.form['registerPassword']
-        confirm = request.form['registerConfirm']
         controladora = CntrlSConta()
-        user = controladora.cadastrar(nome,email,senha,confirm)
+        user = controladora.cadastrar(nome,email,senha)
         if user:
             session["userID"] = user.getId()
-            session["nomeUser"] = user.getNome()
-            session["emailUser"] = user.getEmail()
-            session["passwordUser"] = user.getSenha()
-            return jsonify({"message":"sucesso ao registrar","status":"success","redirect":url_for('Home')}),200
+            session["nomeUser"] = user.getNome().get()
+            session["emailUser"] = user.getEmail().get()
+            session["passwordUser"] = user.getSenha().get()
+            return jsonify({"message":"sucesso ao registrar","status":"success","redirect":url_for('Login')}),200
         else:
             return jsonify({"message":"falha ao registrar usuario","status":"fail"}),401
         
@@ -70,29 +67,39 @@ def Registrar():
     
 #Pagina do usuario onde ele pode fazer o CRUD
 #Carlos 
-@app.route("/usuario")
+@app.route("/usuario",methods=["GET","POST"])
 def UsuarioPage():
     if request.method == "POST":
         action = request.form.get("action")
-        print(action)
         if action == "edit":
+            id = session["userID"]
             nome = request.form.get("nome")
             email = request.form.get("email")
             imagem = request.files.get("imagem")
             dicionario = {}
             if nome:
-                dicionario["nome"] = nome
+                dicionario["Nome"] = nome
             if email:
-                dicionario["email"] = email
+                dicionario["Email"] = email
             if imagem:
                 imagem_blob = imagem.read()
-                dicionario["imagem"] = imagem_blob
+                dicionario["FotoPerfil"] = imagem_blob
 
-            #print(dicionario)
             #logica para receber dicionario e editar o usuario no banco de dados
-            return jsonify({"message":"Edição valida","status":"success","redirect":url_for("UsuarioPage")}),200
+            controladora = CntrlSConta()
+            if controladora.editar(id,dicionario):
+                if "Email" in dicionario:
+                    session["emailUser"] = dicionario["Email"]
+
+                if "Nome" in dicionario:
+                    session["nomeUser"] = dicionario["Nome"]
+
+                return jsonify({"message":"Edição valida","status":"success","redirect":url_for("UsuarioPage")}),200
+            else:
+                return jsonify({"message":"Edição invalida","status":"fail"}),401
         elif action == "excluir":
             #logica para excluir usuario do banco de dados
+            #para poder excluir a conta, deve-se excluir musicas salvas e playlist usuario
             return jsonify({"message":"exclusao valida","status":"success","redirect":url_for("UsuarioPage")}),200
         
         elif action == "playlist":
@@ -106,8 +113,18 @@ def UsuarioPage():
             return jsonify({"message":"Acao invalida","status":"fail"}),401
     else:
         #Metodo GET, mostrar usuario na tela
-        usuario = ("Rodolfo","teste@gmail.com","https://via.placeholder.com/150")
-        return render_template("usuario.html",Usuario=usuario)
+        controladora = CntrlSConta()
+        id = session["userID"]
+        usuario = controladora.ler(id)
+        imagem = usuario[4]
+        if imagem:
+            #decodifica a imagem em base 64
+            imagem64 = base64.b64encode(imagem).decode('utf-8')
+            #cria um caminho para o html poder processar
+            imagem = f"data:image/jpeg;base64,{imagem64}"
+        else:
+            imagem = None
+        return render_template("usuario.html",Usuario=usuario,Imagem=imagem)
 
 ###########   Funcionalidades da aplicação (musica) ######################
 

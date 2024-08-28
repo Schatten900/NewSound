@@ -11,9 +11,13 @@
 <body>
     <div id="containerUsuarioActions">
         <div id="infoUsuario">
-            <img src="{{Usuario[2]}}" alt="capa do usuario" id="capaUsuario">
-            <label id="tituloUsuario">{{Usuario[0]}}</label>
-            <label id="emailUsuario">{{Usuario[1]}}</label>
+            {%if Imagem %}
+                <img src="{{Imagem}}" alt="capa do usuario" id="capaUsuario">
+            {% else %}
+                <img src="{{url_for('static',filename='images/anonimo.png')}}" alt="capa do usuario" id="capaUsuario">
+            {% endif %}
+            <label id="tituloUsuario">{{Usuario[1]}}</label>
+            <label id="emailUsuario">{{Usuario[3]}}</label>
         </div>
         <form method="POST" id=formEditConta enctype="multipart/form-data">
             <div id="containerEditInfo">
@@ -28,20 +32,23 @@
                 <button class="buttomSaveEdit" onclick="SaveEditUser(event)">Salvar</button>
             </div>
         </form>
-        
+
         <form id="formUsuarioActions" enctype="multipart/form-data">
             <div>
                 <button id="editarContaButtom" class="usuarioFormButtom" onclick="editUser(event)">Editar conta</button>
             </div>
 
             <div>
-                <button id="excluirContaButtom" class="usuarioFormButtom" onclick="Redirecionar(event,'excluir')">Excluir conta</button>
+                <button id="excluirContaButtom" class="usuarioFormButtom"
+                    onclick="Redirecionar(event,'excluir')">Excluir conta</button>
             </div>
             <div>
-                <button id="playlistCreationButtom" class="usuarioFormButtom" onclick="Redirecionar(event,'playlist')">Playlists criadas</button>
+                <button id="playlistCreationButtom" class="usuarioFormButtom"
+                    onclick="Redirecionar(event,'playlist')">Playlists criadas</button>
             </div>
             <div>
-                <button id="musicSalvaButtom" class="usuarioFormButtom" onclick="Redirecionar(event,'musicas')">Musicas salvas</button>
+                <button id="musicSalvaButtom" class="usuarioFormButtom" onclick="Redirecionar(event,'musicas')">Musicas
+                    salvas</button>
             </div>
         </form>
     </div>
