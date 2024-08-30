@@ -1,0 +1,83 @@
+CREATE TABLE Usuario (
+CodUser INT PRIMARY KEY AUTO_INCREMENT,
+Nome varchar(50) NOT NULL,
+Senha varchar(6) NOT NULL,
+Email varchar(60) UNIQUE NOT NULL,
+FotoPerfil MEDIUMBLOB
+);
+
+CREATE TABLE Artista(
+CodArtista INT AUTO_INCREMENT,
+Nome VARCHAR(50) NOT NULL,
+ArtistaMiniatura MEDIUMBLOB,
+PRIMARY KEY (CodArtista) 
+);
+
+CREATE TABLE Album(
+CodAlbum INT AUTO_INCREMENT,
+CodArtista INT NOT NULL,
+Nome VARCHAR(50) NOT NULL,
+CapaAlbum MEDIUMBLOB,
+PRIMARY KEY (CodAlbum), 
+FOREIGN KEY (CodArtista) REFERENCES Artista(CodArtista)
+);
+
+CREATE TABLE Musica(
+CodMusica INT AUTO_INCREMENT,
+CodAlbum INT,
+Nome VARCHAR(50) NOT NULL,
+MP3 MEDIUMBLOB NOT NULL,
+PRIMARY KEY(CodMusica),
+FOREIGN KEY (CodAlbum) REFERENCES Album(CodAlbum) 
+);
+
+CREATE TABLE ArtistaMusica(
+CodMusica INT,
+CodArtista INT,
+PRIMARY KEY (CodMusica,CodArtista),
+FOREIGN KEY (CodMusica) REFERENCES Musica(CodMusica),
+FOREIGN KEY (CodArtista) REFERENCES Artista(CodArtista)
+);
+
+CREATE TABLE MusicasSalvas(
+CodUser INT,
+CodMusica INT,
+PRIMARY KEY (CodUser,CodMusica),
+FOREIGN KEY (CodUser) REFERENCES Usuario(CodUser),
+FOREIGN KEY (CodMusica) REFERENCES Musica(CodMusica)
+);
+
+CREATE TABLE Playlist (
+CodPlaylist INT PRIMARY KEY AUTO_INCREMENT,
+Nome varchar(50) NOT NULL
+);
+
+CREATE TABLE PlaylistMusica (
+CodMusica INT,
+CodPlaylist INT,
+PRIMARY KEY (CodMusica, CodPlaylist),
+FOREIGN KEY (CodMusica) REFERENCES Musica(CodMusica),
+FOREIGN KEY (CodPlaylist) REFERENCES Playlist(CodPlaylist)
+);
+
+CREATE TABLE PlaylistUsuario (
+CodUser INT,
+CodPlaylist INT,
+PRIMARY KEY (CodUser, CodPlaylist),
+FOREIGN KEY (CodUser) REFERENCES Usuario(CodUser),
+FOREIGN KEY (CodPlaylist) REFERENCES Playlist(CodPlaylist)
+);
+
+CREATE TABLE Genero(
+CodGenero INT AUTO_INCREMENT,
+Nome VARCHAR(50),
+PRIMARY KEY (CodGenero)
+);
+
+CREATE TABLE MusicaGenero(
+CodGenero INT,
+CodMusica INT,
+PRIMARY KEY (CodGenero,CodMusica),
+FOREIGN KEY (CodGenero) REFERENCES Genero(CodGenero),
+FOREIGN KEY (CodMusica) REFERENCES Musica(CodMusica)
+);
