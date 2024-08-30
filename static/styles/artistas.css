@@ -84,5 +84,11 @@ body {
     border-radius: 10px;
 }
 
+#codArtista{
+    font-family: "Oswald", sans-serif;
+    font-size: 15px;
+    color: rgb(190, 190, 190);
+    padding-right: 5px;
+}
 
 

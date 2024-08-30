@@ -32,8 +32,9 @@
                     </div>
                 </div>
 
-                <input type="text" placeholder="Nome da musica" name="musicaInput" id="musicaInput"class="inputMusic">
-                <input type="text" placeholder="Nome do artista" name="artistaInput" id="artistaInput" class="inputMusic">
+                <input type="text" placeholder="Nome da musica" name="musicaInput" id="musicaInput" class="inputMusic">
+                <input type="text" placeholder="Nome do artista" name="artistaInput" id="artistaInput"
+                    class="inputMusic">
                 <button id="addMusicForm" onclick="addMusicInMusicSaves(event)">Adicionar</button>
             </div>
         </form>
@@ -42,8 +43,8 @@
             {% for music in Musicas %}
             <div id="musicBD">
                 <div id="containerInfoMusicBD">
-                    <label id="nameMusic">{{music[0]}}</label>
-                    <label id="nameArtistaMusic">{{music[1]}}</label>
+                    <label id="nameMusic">{{music[1]}}</label>
+                    <label id="nameArtistaMusic">{{music[2]}}</label>
                 </div>
                 <button class="circleButtom">
                     <i class="fas fa-trash-alt"></i>

@@ -14,6 +14,9 @@ function addMusicInMusicSaves(event) {
    const artistaName = document.getElementById("artistaInput");
    const musica = document.getElementById("fileUpload");
 
+   console.log(musicName.value)
+   console.log(artistaName.value)
+
    //objeto FormData é um "json" permite enviar dados binarios como imagem/musica
    const formData = new FormData();
    formData.append("action", "add");
@@ -51,11 +54,14 @@ function addMusicInMusicSaves(event) {
       })
 }
 
-function addMusicInPlaylists(event,playlistId){
+function addMusicInPlaylists(event, playlistId) {
    event.preventDefault();
    const musicName = document.getElementById("musicaInput");
    const artistaName = document.getElementById("artistaInput");
    const musica = document.getElementById("fileUpload");
+
+   console.log(musicName)
+   console.log(artistaName)
 
    //objeto FormData é um "json" permite enviar dados binarios como imagem/musica
    const formData = new FormData();

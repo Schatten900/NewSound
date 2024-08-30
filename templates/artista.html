@@ -18,9 +18,10 @@
             {% for artista in Artistas %}
             <div id="artistaBD">
                 <div id="containerInfoArtista">
-                    <img src="{{artista[1]}}" id="capaArtista">
-                    <label id="nameArtista">{{artista[0]}}</label>
+                    <img src="{{artista[2]}}" id="capaArtista">
+                    <label id="nameArtista">{{artista[1]}}</label>
                 </div>
+                <label id="codArtista">Cod: {{artista[0]}}</label>
             </div>
             {% endfor %}
         </main>

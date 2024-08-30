@@ -1,6 +1,8 @@
 from flask import Flask, request, render_template, jsonify,url_for, session,redirect
 from servicos.modContas import CntrlSConta
-from servicos.modMusica import CntrlSPlaylist
+from servicos.modPlaylist import CntrlSPlaylist
+from servicos.modMusica import CntrlSMusica
+from servicos.modArtistas import CntrlSArtista
 from dominios.bancoDef import flaskSecret
 from dotenv import load_dotenv
 import os
@@ -168,28 +170,31 @@ def NavegarPage():
 def MusicasSalvas():
     #endpoint para navegar pelas musicas salvas pelo usuario
     #Fazer select do banco de dados
+    idUsuario = session["userID"]
     if request.method == "POST":
         action = request.form.get("action")
         nameMusic = request.form.get("musicaName")
         nameArtista = request.form.get("artistaName")
         if action == "add":
+            controladora = CntrlSMusica()
             musica = request.files.get("musica")
-            idUsuario = session["userID"]
             if musica:
                 musica_blob = musica.read()
-            #controladora = CntrlSMusica()
-            #Checar se existe a musica no banco de dados
-            #existe = controladora.pesquisarMusica(nameMusic,nameArtista)
-            #if existe:
-                #constroladora.adicionarMusicaUsuario(nameMusic,nameArtista,idUsuario)
-            #else:
-                #adiciona no banco de dados a musica e no musicas Salvas do usuario
-                #controladora.adicionarMusica(nameMusic,nameArtista,idUsuario,musica)
-                #constroladora.adicionarMusicaUsuario(nameMusic,nameArtista,idUsuario)
+                print("Musica Enviada")
+                adicionou = controladora.adicionarMusica(nameMusic,nameArtista,idUsuario,musica_blob)
+                print(adicionou)
+            else:
+                print("Checa a musica")
+                adicionou = controladora.adicionarMusica(nameMusic,nameArtista,idUsuario)
+            
+            if adicionou:
+                print("Adicionado com sucesso")
+                return jsonify({"message":"Adicao feita com sucesso","status":"success"}),200
+            return jsonify({"message":"Erro ao adicionar musica","status":"fail"}),401
 
     else: 
-        #musicasPlaylist = controladora.pesquisarMusicas(idUSuario)
-        musicas = [("Euforia","Teste1"),("Ceu azul","Charlie Brown"),("Rise","Katty")]
+        controladora = CntrlSMusica()
+        musicas = controladora.listarMusicas(idUsuario)
         return render_template("musicasSalvas.html",Musicas=musicas)
 
 #################################################
@@ -254,13 +259,15 @@ def AlbumMusicas(idAlbum):
 ###############################################################
 
 #Carlos 
-@app.route("/artista")
+@app.route("/artista",methods=["GET","POST"])
 def ArtistasPage():
     #Seleção de artistas salvas na aplicação
-    #controladora = cntrlSArtista()
-    #artistas = controladora.pesquisarArtistas()
-    artistas = [("Panic at Disco", "https://via.placeholder.com/150")]
-    return render_template("artista.html",Artistas=artistas)
+    if request.method == "POST":
+        pass
+    else:
+        controladora = CntrlSArtista()
+        artistas = controladora.pesquisarArtistas()
+        return render_template("artista.html",Artistas=artistas)
 
 #Carlos
 @app.route("/artista/{idArtista}")
