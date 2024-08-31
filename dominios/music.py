@@ -1,13 +1,15 @@
+import os
+import tempfile
 import spotipy
+import pygame
 from spotipy.oauth2 import SpotifyClientCredentials
 from pygame import mixer
 from dominios.user import dominio
 from dotenv import load_dotenv
-import os
-import requests
 
 dotenv_path='.env'
 load_dotenv(dotenv_path=dotenv_path)
+
 
 def getSpotifyConnection():
     #dados de conexao com a api
@@ -111,20 +113,30 @@ class Cancao:
             print(f"Erro ao procurar pela musica: {e}")
             return False
     
+#Essa classe nao é mais necessaria, pois deve tocar no navegador... mas vou deixar ai por enquanto
+class AcoesMusicas:
+    def tocarMusica(self,mp3Data):
+        #Criar um arquivo temporario para armazenar o blob
+        with tempfile.NamedTemporaryFile(delete=False,suffix=".mp3") as temp_mp3_file:
+            temp_mp3_file.write(mp3Data)
+            temp_mp3_file_path = temp_mp3_file.name
 
-    def pegarCancao(self,idMusica):
-        #Funcao para pegar o .mp3 pelo id(click do usuario)
-        pass
-
-    def tocarPlay(self,arquivo):
-        #arquivo é o .mp3 pego no banco de dados
+        #Tocar a musica usando o arquivo temporario
         try:
             mixer.init()
-            mixer.music.load(arquivo)
+            mixer.music.load(temp_mp3_file_path)
             mixer.music.play()
-            input("Pressione qualquer tecla para parar")
-            mixer.music.stop()
-        except ValueError as e:
+
+            #Espera ate a musica terminar
+            while mixer.music.get_busy():
+                pygame.time.Clock().tick(10)
+
+        except Exception as e:
             print(f"Erro ao tocar a musica {e}")
 
-
+        finally:
+            #Apagar o arquivo temporario
+            try:
+                os.remove(temp_mp3_file_path)
+            except OSError as e:
+                print(f"Erro ao tentar apagar o arquivo temporario {e}")

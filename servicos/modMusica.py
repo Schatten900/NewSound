@@ -83,6 +83,10 @@ class CntrlSMusica:
         except ValueError as e:
             print(f"Erro ao adicionar no banco de dados: {e}")
             return False
+        
+    def obterMP3(self,idMusica):
+        container = ContainerMusica()
+        return container.obterMP3(idMusica)
 
     def removerMusica(self,nomeMusica,artista):
         #Remove musica das musicas salvas pelo usuario
@@ -150,6 +154,21 @@ class ContainerMusica:
             print(f"erro ao inserir no banco MusicaArtista: {e}")
             return False
 
+    def obterMP3(self,idMusica):
+        try:
+            QUERY = """
+            SELECT MP3 FROM Musica WHERE CodMusica = %s
+            """
+            params = (idMusica,)
+            mp3 = executeQuery(QUERY,params)
+            if mp3:
+                return mp3[0]
+            return None 
+
+        except ValueError as e:
+            print(f"Erro ao obter mp3: {e}")
+            return None
+
     def pesquisarMusica(self,nomeMusica,artista):
         try:
             QUERY = """
@@ -172,7 +191,7 @@ class ContainerMusica:
     def listarMusicas(self,idUser):
         try:
             QUERY = """
-            SELECT M.CodMusica,M.Nome,A.Nome
+            SELECT M.CodMusica,M.Nome,A.Nome,M.MP3
             FROM MusicasSalvas as MS
             INNER JOIN Musica as M ON M.CodMusica = MS.CodMusica
             INNER JOIN ArtistaMusica as AM ON M.CodMusica = AM.CodMusica
@@ -182,7 +201,6 @@ class ContainerMusica:
             params = (idUser)
             result = executeQuery(QUERY,params)
             if result:
-                print(result)
                 return result
             return None
 

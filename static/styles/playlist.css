@@ -119,6 +119,7 @@ body {
 }
 
 .circleButtom {
+    width: 50px;
     background-color: rgba(26, 26, 26, 0.911);
     color: white;
     border-radius: 50px;
@@ -212,5 +213,10 @@ body {
     font-family: "Oswald", sans-serif;
     font-size: 15px;
     color: rgb(190, 190, 190);
+}
 
+#removeButtomMusic{
+    display: flex;
+    flex-direction: row;
+    padding-right: 5px;
 }

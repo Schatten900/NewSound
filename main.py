@@ -1,4 +1,5 @@
-from flask import Flask, request, render_template, jsonify,url_for, session,redirect
+from flask import Flask, request, render_template, jsonify,url_for, session,redirect,send_file
+from dominios.music import AcoesMusicas
 from servicos.modContas import CntrlSConta
 from servicos.modPlaylist import CntrlSPlaylist
 from servicos.modMusica import CntrlSMusica
@@ -6,6 +7,7 @@ from servicos.modArtistas import CntrlSArtista
 from dominios.bancoDef import flaskSecret
 from dotenv import load_dotenv
 import os
+import io
 import base64
 
 app = Flask(__name__)
@@ -172,9 +174,15 @@ def MusicasSalvas():
     #Fazer select do banco de dados
     idUsuario = session["userID"]
     if request.method == "POST":
-        action = request.form.get("action")
-        nameMusic = request.form.get("musicaName")
-        nameArtista = request.form.get("artistaName")
+        if request.form.get("action"):
+            action = request.form.get("action")
+            nameMusic = request.form.get("musicaName")
+            nameArtista = request.form.get("artistaName")
+        else:
+            data = request.json
+            action = data.get("action")
+            print(action)
+
         if action == "add":
             controladora = CntrlSMusica()
             musica = request.files.get("musica")
@@ -191,7 +199,28 @@ def MusicasSalvas():
                 print("Adicionado com sucesso")
                 return jsonify({"message":"Adicao feita com sucesso","status":"success"}),200
             return jsonify({"message":"Erro ao adicionar musica","status":"fail"}),401
+        elif action == "remove":
+            pass
 
+        elif action == "tocar":
+            data = request.json
+            primeiraMusicaCod = data.get("CodMusic")
+            print(f"Codigo obtido: {primeiraMusicaCod}")
+
+            controladora = CntrlSMusica()
+            mp3Primeira = controladora.obterMP3(primeiraMusicaCod)
+            if not mp3Primeira:
+                return jsonify({"message":"ocorreu um erro ao pegar Musica","status":"fail"}),401
+            #Tocar a musica que o usuario escolheu
+            #Converter o mp3 do BD para arquivo
+            mp3Arquivo = mp3Primeira[0]
+
+            #Retorna a musica para o navegador poder reproduzir
+            #Codifica em bytes, permite que seja enviado em forma mp3, nao deixa ser baixado e nome do objeto
+            return send_file(io.BytesIO(mp3Arquivo), mimetype='audio/mpeg', as_attachment=False, download_name='musica.mp3')
+        else:
+            print(f"Acao invalida: {action}")
+            return jsonify({"message":"ocorreu um erro inesperado","status":"fail"}),401
     else: 
         controladora = CntrlSMusica()
         musicas = controladora.listarMusicas(idUsuario)

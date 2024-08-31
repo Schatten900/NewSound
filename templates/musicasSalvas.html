@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="{{url_for('static',filename='styles/playlist.css')}}" rel="stylesheet">
+    <link href="{{url_for('static',filename='styles/playerMusica.css')}}" rel="stylesheet">
     <title>Musicas</title>
 </head>
 
@@ -41,20 +43,27 @@
 
         <main id="musicPlaylistSalvas">
             {% for music in Musicas %}
-            <div id="musicBD">
+            <div id="musicBD" onclick="tocarMusica(event,'musicasSalvas')" data-music-cod="{{ music[0] }}">
                 <div id="containerInfoMusicBD">
                     <label id="nameMusic">{{music[1]}}</label>
                     <label id="nameArtistaMusic">{{music[2]}}</label>
                 </div>
-                <button class="circleButtom">
-                    <i class="fas fa-trash-alt"></i>
-                </button>
+
+                <div id="removeButtomMusic">
+                    <button class="circleButtom">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
             </div>
             {% endfor %}
+            <audio id="playerMusica" class="player" controls>
+                Seu navegador não suporta o elemento de áudio.
+            </audio>
         </main>
     </div>
 
 </body>
 <script src="{{url_for('static',filename='javascript/playlistForm.js')}}"></script>
+<script src="{{url_for('static',filename='javascript/tocarMusica.js')}}"></script>
 
 </html>
