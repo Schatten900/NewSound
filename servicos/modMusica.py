@@ -19,9 +19,11 @@ class CntrlSMusica:
             
             container = ContainerMusica()
             # Se a musica existe no banco, adicione ela a musicaSalvas
-            if self.pesquisarMusica(nomeMusica,artista):
+            result,CodMusica = self.pesquisarMusica(nomeMusica,artista)
+            if result:
+                print(CodMusica)
                 print("Devemos adicionar a musica ja existente")
-                return container.adicionarMusicaSalvas(nomeMusica,artista)
+                return container.adicionarMusicaSalvas(codUser,CodMusica)
     
             else:
                 print("Musica nao existe na BD, vamos adiciona-la")
@@ -29,9 +31,11 @@ class CntrlSMusica:
                 nomeAlbum = musica.getAlbum()
                 print(f"Nome do album: {nomeAlbum}")
                 artistaMiniatura = musica.getArtista().getMiniatura()
-                #Fazer o insert em Artistas
+                #Checar se o artista existe
                 cntrlArtista = CntrlSArtista()
+
                 result,codArtista = cntrlArtista.pesquisarArtista(nomeMusica,artista)
+                print("Esse é o cod Artista:")
                 print(result,codArtista)
                 if not result:
                     if artistaMiniatura:
@@ -41,9 +45,6 @@ class CntrlSMusica:
                     else:
                         print("Nao existe miniatura")
                         result,codArtista = cntrlArtista.adicionarArtista(artista)
-
-                    print("Apos a adicao ficou: ")
-                    print(result,codArtista)
                 #Se a musica estiver vinculada a um album
                 if nomeAlbum:
                     print(f"Nome do album: {nomeAlbum}")
@@ -88,14 +89,15 @@ class CntrlSMusica:
         container = ContainerMusica()
         return container.obterMP3(idMusica)
 
-    def removerMusica(self,nomeMusica,artista):
+    def removerMusicaSalvas(self,codUsuario,codMusica):
         #Remove musica das musicas salvas pelo usuario
-        pass
+        container = ContainerMusica()
+        return container.removerMusicaSalvas(codUsuario,codMusica)
 
-    def listarMusicas(self,idUser):
+    def listarMusicasSalvas(self,idUser):
         #Lista todas as musicas salvas pelo usuario
         container = ContainerMusica()
-        return container.listarMusicas(idUser)
+        return container.listarMusicasSalvas(idUser)
 
     def pesquisarMusica(self,nomeMusica,artista):
         #Pesquisa se a musica existe no banco de dados ou nao
@@ -113,7 +115,7 @@ class ContainerMusica:
             executeQuery(QUERY,params)
             return True
 
-        except ValueError as e:
+        except Exception as e:
             print(f"Erro ao inserir no banco MusicasSalvas: {e}")
             return False
 
@@ -136,7 +138,7 @@ class ContainerMusica:
                 return True,codMusica
             return False,-1
 
-        except ValueError as e:
+        except Exception as e:
             print(f"Erro ao inserir no banco Musica: {e}")
             return False
         
@@ -150,7 +152,7 @@ class ContainerMusica:
             executeQuery(QUERY,params)
             return True
         
-        except ValueError as e:
+        except Exception as e:
             print(f"erro ao inserir no banco MusicaArtista: {e}")
             return False
 
@@ -165,14 +167,14 @@ class ContainerMusica:
                 return mp3[0]
             return None 
 
-        except ValueError as e:
+        except Exception as e:
             print(f"Erro ao obter mp3: {e}")
             return None
 
     def pesquisarMusica(self,nomeMusica,artista):
         try:
             QUERY = """
-            SELECT M.Nome,A.Nome
+            SELECT M.CodMusica
             FROM ArtistaMusica as AM
             INNER JOIN Musica as M ON M.CodMusica = AM.CodMusica
             INNER JOIN Artista as A ON A.CodArtista = AM.CodArtista
@@ -181,14 +183,15 @@ class ContainerMusica:
             params = (nomeMusica,artista,)
             result = executeQuery(QUERY,params)
             if result:
-                return True
-            return False
+                return True,result[0][0]
+            return False,-1
 
-        except ValueError as e:
+        except Exception as e:
             print(f"Erro ao pesquisar pela musica: {e}")
-            return False
+            return False,-1
         
-    def listarMusicas(self,idUser):
+    def listarMusicasSalvas(self,idUser):
+        #Lista todas as musicas salvas pelo usuario
         try:
             QUERY = """
             SELECT M.CodMusica,M.Nome,A.Nome,M.MP3
@@ -204,6 +207,22 @@ class ContainerMusica:
                 return result
             return None
 
-        except ValueError as e:
+        except Exception as e:
             print(f"Erro ao pesquisar musicas do usuario {e}")
             return None
+        
+    def removerMusicaSalvas(self,codUsuario,codMusica):
+        try:
+            QUERY = """
+            DELETE FROM MusicasSalvas WHERE CodUser = %s and CodMusica = %s
+            """
+            
+            print(codMusica,codUsuario)
+            params = (codUsuario,codMusica)
+            executeQuery(QUERY,params)
+            print("removeu")
+            return True
+
+        except Exception as e:
+            print(f"Houve um erro ao remover: {e}")
+            return False

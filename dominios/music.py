@@ -52,7 +52,8 @@ class Artista(dominio):
             
             if artist["name"]:
                 if "images" in artist and artist["images"]:
-                    self.miniaturaArtista = artist["images"][0]["url"]
+                    artistaImagem = artist["images"][0]["url"]
+                    self.miniaturaArtista = artistaImagem
 
                 return True
             return False
@@ -105,7 +106,6 @@ class Cancao:
                     if "images" in track["album"] and track["album"]["images"]:
                         capaAlbum = track["album"]["images"][0]["url"]
                         self.capaAlbum = capaAlbum 
-                        #print(self.capaAlbum)
                 return True
             return False
         

@@ -13,46 +13,19 @@
 <body>
     <div id="ContainerPlaylist">
         <div>
-            <label id="nomePlaylistTitulo">Musicas Salvas</label>
+            <label id="nomePlaylistTitulo">Musicas Album</label>
         </div>
 
         <div>
-            <button id="embaralharPlaylistButtom" onclick="embaralharMusicas(event,'musicasSalvas')">Embaralhar </button>
+            <button id="embaralharPlaylistButtom">Embaralhar </button>
         </div>
-
-        <div>
-            <button id="addMusicPlaylistButtom" onclick="addFormPlaylist()">Adicionar músicas</button>
-        </div>
-        <form id="addFormMusicPlaylist">
-            <div id="containerFormAddMusic">
-                <div id="showFile">
-                    <div class="containerFile">
-                        <label for="fileUpload" class="customFileUpload">
-                            Escolha uma musica
-                        </label>
-                        <input id="fileUpload" type="file" />
-                    </div>
-                </div>
-
-                <input type="text" placeholder="Nome da musica" name="musicaInput" id="musicaInput" class="inputMusic">
-                <input type="text" placeholder="Nome do artista" name="artistaInput" id="artistaInput"
-                    class="inputMusic">
-                <button id="addMusicForm" onclick="addMusicInMusicSaves(event)">Adicionar</button>
-            </div>
-        </form>
 
         <main id="musicPlaylistSalvas">
             {% for music in Musicas %}
-            <div id="musicBD" onclick="tocarMusica(event,'musicasSalvas')" data-music-cod="{{ music[0] }}">
+            <div id="musicBD" onclick="tocarMusica(event,)" data-music-cod="{{ music[0] }}">
                 <div id="containerInfoMusicBD">
                     <label id="nameMusic">{{music[1]}}</label>
                     <label id="nameArtistaMusic">{{music[2]}}</label>
-                </div>
-
-                <div id="removeButtomMusic">
-                    <button class="circleButtom" onclick="removerMusica(event,'musicasSalvas')" data-music-cod="{{ music[0] }}">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
                 </div>
             </div>
             {% endfor %}

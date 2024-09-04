@@ -1,13 +1,11 @@
 from flask import Flask, request, render_template, jsonify,url_for, session,redirect,send_file
-from dominios.music import AcoesMusicas
 from servicos.modContas import CntrlSConta
 from servicos.modPlaylist import CntrlSPlaylist
 from servicos.modMusica import CntrlSMusica
 from servicos.modArtistas import CntrlSArtista
 from dominios.bancoDef import flaskSecret
-from dotenv import load_dotenv
-import os
 import io
+import random
 import base64
 
 app = Flask(__name__)
@@ -45,6 +43,7 @@ def Login():
 @app.route("/register", methods=["GET","POST"])
 def Registrar():
     #Pegar os dados do usuario e checar
+
     if request.method == "POST":
         data = request.json
         nome = data.get("nome")
@@ -73,6 +72,8 @@ def Registrar():
 #Carlos 
 @app.route("/usuario",methods=["GET","POST"])
 def UsuarioPage():
+    if not session["userID"]:
+        return redirect("Login")
     if request.method == "POST":
         action = request.form.get("action")
         if action == "edit":
@@ -140,6 +141,8 @@ def Home():
 
 @app.route("/home", methods=["GET", "POST"])
 def HomeRedirect():
+    if 'userID' not in session or not session["userID"]:
+        return redirect("Login")
     if request.method == "POST":
         action = request.form.get("action")
         if action == "login":
@@ -172,7 +175,10 @@ def NavegarPage():
 def MusicasSalvas():
     #endpoint para navegar pelas musicas salvas pelo usuario
     #Fazer select do banco de dados
+    if 'userID' not in session or not session["userID"]:
+        return redirect("Login")
     idUsuario = session["userID"]
+    controladora = CntrlSMusica()
     if request.method == "POST":
         if request.form.get("action"):
             action = request.form.get("action")
@@ -184,30 +190,34 @@ def MusicasSalvas():
             print(action)
 
         if action == "add":
-            controladora = CntrlSMusica()
             musica = request.files.get("musica")
             if musica:
                 musica_blob = musica.read()
                 print("Musica Enviada")
                 adicionou = controladora.adicionarMusica(nameMusic,nameArtista,idUsuario,musica_blob)
-                print(adicionou)
             else:
                 print("Checa a musica")
                 adicionou = controladora.adicionarMusica(nameMusic,nameArtista,idUsuario)
             
             if adicionou:
                 print("Adicionado com sucesso")
-                return jsonify({"message":"Adicao feita com sucesso","status":"success"}),200
+                return jsonify({"message":"Adicao feita com sucesso","status":"success","redirect":url_for("MusicasSalvas")}),200
+            
             return jsonify({"message":"Erro ao adicionar musica","status":"fail"}),401
+        
         elif action == "remove":
-            pass
+            data = request.json
+            removeMusicaCod = data.get("CodMusic")
+            removeu = controladora.removerMusicaSalvas(idUsuario,removeMusicaCod)
+            if removeu:
+                return jsonify({"message":"Removido com sucesso","status":"success","redirect":url_for("MusicasSalvas")}),200
+            return jsonify({"message":"Houve um erro na remoção","status":"fail"}),401
 
         elif action == "tocar":
             data = request.json
             primeiraMusicaCod = data.get("CodMusic")
             print(f"Codigo obtido: {primeiraMusicaCod}")
 
-            controladora = CntrlSMusica()
             mp3Primeira = controladora.obterMP3(primeiraMusicaCod)
             if not mp3Primeira:
                 return jsonify({"message":"ocorreu um erro ao pegar Musica","status":"fail"}),401
@@ -218,13 +228,42 @@ def MusicasSalvas():
             #Retorna a musica para o navegador poder reproduzir
             #Codifica em bytes, permite que seja enviado em forma mp3, nao deixa ser baixado e nome do objeto
             return send_file(io.BytesIO(mp3Arquivo), mimetype='audio/mpeg', as_attachment=False, download_name='musica.mp3')
+        
+        elif action == "embaralhar":
+            musicasSalvas = controladora.listarMusicasSalvas(idUsuario)
+            musicas = musicasSalvas
+            codigos = []
+            musicasBlob = []
+
+            #Pega Codigo das musicas
+            for musica in musicas:
+                codAux = musica[0]
+                codigos.append(codAux)
+
+            #Obtem o mp3 das musicas
+            for codigo in codigos:
+                blobAux = controladora.obterMP3(codigo)
+                if not blobAux:
+                    return jsonify({"message":"ocorreu um erro ao pegar Musica","status":"fail"}),401
+                musicasBlob.append(blobAux[0])
+                
+            #Faz a logica de embaralhar a lista
+            random.shuffle(musicasBlob)
+
+            #Cria um arquivo binario com todas as musicas
+            arquivoMusicas = b"".join(musicasBlob)
+            
+            print("Todas musicas enviadas com sucesso", len(musicas))
+            return send_file(io.BytesIO(arquivoMusicas), mimetype='audio/mpeg', as_attachment=False, download_name='musica.mp3')
+
         else:
             print(f"Acao invalida: {action}")
             return jsonify({"message":"ocorreu um erro inesperado","status":"fail"}),401
     else: 
-        controladora = CntrlSMusica()
-        musicas = controladora.listarMusicas(idUsuario)
-        return render_template("musicasSalvas.html",Musicas=musicas)
+        musicas = controladora.listarMusicasSalvas(idUsuario)
+        if musicas:
+            return render_template("musicasSalvas.html",Musicas=musicas)
+        return render_template("MusicasSalvas.html")
 
 #################################################
 
@@ -238,6 +277,9 @@ def PlaylistCriadas():
     #controladora = CntrlSPlaylist()
     #playlists = controladora.pesquisarPlaylist(idUsuario)e
     #criar o redirecionamento para o PlaylistUsuario/idPlaylist
+    if 'userID' not in session or not session["userID"]:
+        return redirect("Login")
+
     if request.method == "POST":
         #logica pra pegar o id pelo click na musica
         render_template("playlistUser.html")
@@ -246,10 +288,13 @@ def PlaylistCriadas():
 
     return render_template("playlistCreation.html",Playlist=playlist)
 
-#Carlos
+#Ricardo
 @app.route("/playlistUser/{id_playlist}",methods=["GET","POST"])
 def playlistUsuario(id_playlist):
     #Adicao, seleção e remoção  relacionadas a uma playlist criada pelo usuario
+    if 'userID' not in session or not session["userID"]:
+        return redirect("Login")
+    
     if request.method == "POST":
         controladora = CntrlSPlaylist()
         action = request.form.get("action")
@@ -279,11 +324,21 @@ def playlistUsuario(id_playlist):
 ############################################    
 
 #Ricardo
-@app.route("/album/{idAlbum}")
+@app.route("/album/<idAlbum>")
 def AlbumMusicas(idAlbum):
     #listar todas as musicas vinculadas à aquele album
     #Somente seleção ate então
-    pass
+    if 'userID' not in session or not session["userID"]:
+        return redirect("Login")
+    controladora = CntrlSArtista()
+    if request.method == "POST":
+        pass
+
+    else:
+        musicas = controladora.musicasAlbum(idAlbum)
+        if musicas:
+            return render_template("MusicasAlbum.html",Musicas=musicas)
+        return render_template("MusicasAlbum.html")
 
 ###############################################################
 
@@ -291,22 +346,51 @@ def AlbumMusicas(idAlbum):
 @app.route("/artista",methods=["GET","POST"])
 def ArtistasPage():
     #Seleção de artistas salvas na aplicação
+    if 'userID' not in session or not session["userID"]:
+        return redirect("Login")
+    
     if request.method == "POST":
-        pass
+        data = request.json
+        action = data.get("action")
+        if action == "enviar":
+            codArtista = data.get("codArtista")
+            if codArtista:
+                return jsonify({"message":"Redirecionado com sucesso","status":"success","redirect":url_for("ArtistasPageSongs",idArtista = codArtista)}),200
+            return jsonify({"message":"Erro ao redirecionar","status":"fail"}),401
     else:
         controladora = CntrlSArtista()
         artistas = controladora.pesquisarArtistas()
-        return render_template("artista.html",Artistas=artistas)
+        if artistas:
+            return render_template("artista.html",Artistas=artistas)
+        return render_template("artista.html")
 
 #Carlos
-@app.route("/artista/{idArtista}")
+@app.route("/artista/<idArtista>",methods=["GET","POST"])
 def ArtistasPageSongs(idArtista):
-    #Selecao de albuns vinculados ao artista de idArtista
     #Logica para pesquisar albuns do artista
-    #Exemplo
     #nome do artista,album,imagem
-    info = [("Panic at Disco","Album2", "https://via.placeholder.com/150"),("Panic at Disco","Album1","https://via.placeholder.com/150")]
-    return render_template("artistaMusica.html",informacoes=info)
+    if 'userID' not in session or not session["userID"]:
+        return redirect("Login")
+    #Logica para pesquisar albuns e musicas vinculadas a aquele album por meio de uma view
+    
+    controladora = CntrlSArtista()
+    if request.method == "POST":
+        #Logica para redirecionar o usuario para as musicas vinculadas aquele album
+        data = request.json
+        action = data.get("action")
+        if action == "enviar":
+            codAlbum = data.get("codAlbum")
+            if codAlbum:
+                return jsonify({"message":"Redirecionado com sucesso","status":"success","redirect":url_for("AlbumMusicas",idAlbum = codAlbum)}),200
+            return jsonify({"message":"Erro ao redirecionar","status":"fail"}),401
+        else:
+            return jsonify({"message":"Acao invalida","status":"fail"}),401
+    else:
+        #Pesquisar os albuns vinculados ao a rtista
+        album =controladora.listarAlbuns(idArtista)
+        if album:
+            return render_template("artistaAlbum.html",informacoes=album)
+        return render_template("ArtistaAlbum.html")
 
 if __name__ == "__main__":
     app.run(debug=True, port=8000)

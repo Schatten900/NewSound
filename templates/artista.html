@@ -16,16 +16,16 @@
 
         <main id="ArtistasLista">
             {% for artista in Artistas %}
-            <div id="artistaBD">
+            <div id="artistaBD" onclick= "enviarArtista(event)" data-artista-cod="{{ artista[0] }}">
                 <div id="containerInfoArtista">
                     <img src="{{artista[2]}}" id="capaArtista">
                     <label id="nameArtista">{{artista[1]}}</label>
                 </div>
-                <label id="codArtista">Cod: {{artista[0]}}</label>
             </div>
             {% endfor %}
         </main>
     </div>
+    <script src="{{url_for('static',filename='javascript/enviarArtista.js')}}"></script>
 
 </body>
 

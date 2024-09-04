@@ -11,14 +11,14 @@
 <body>
     <div id="ContainerAlbumArtistas">
         <div>
-            <label id="ArtistaTitulo"> {{informacoes[0][0]}} </label>
+            <label id="ArtistaTitulo"> {{informacoes[0][2]}} </label>
         </div>
 
         <main id="ArtistaAlbumLista">
             {% for info in informacoes %}
-            <div id="albumBD">
+            <div id="albumBD" onclick= "enviarAlbum(event)" data-album-cod="{{ info[0] }}">
                 <div id="containerInfoAlbum">
-                    <img src="{{info[2]}}" id="capaAlbum">
+                    <img src="{{info[3]}}" id="capaAlbum">
                     <label id="nameAlbum">{{info[1]}}</label>
                 </div>
             </div>
@@ -26,6 +26,7 @@
         </main>
     </div>
 
+    <script src="{{url_for('static',filename='javascript/enviarAlbum.js')}}"></script>
 </body>
 
 </html>
