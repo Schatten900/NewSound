@@ -69,6 +69,7 @@ class Cancao:
         self.musica = Musica()
         self.album = ""
         self.capaAlbum = ""
+        self.generos = []
 
     def getArtista(self):
         return self.artista
@@ -91,21 +92,27 @@ class Cancao:
                 print("Nao existe essa track")
                 return False
             track = tracks[0]
-            #print(track)
 
             songName = track["name"]
             songArtist = track["artists"][0]["name"]
             album = track["album"]["name"]
+            artistaId = track["artists"][0]["id"]
 
             if songArtist.lower() == artista.lower() and songName.lower() == musica.lower():
                 self.musica.set(musica)
                 self.artista.set(artista)
+                artistaInfo = sp.artist(artistaId)
+                generos = artistaInfo["genres"]
                 if album:
                     self.album = album
-                    #print(self.album)
                     if "images" in track["album"] and track["album"]["images"]:
                         capaAlbum = track["album"]["images"][0]["url"]
                         self.capaAlbum = capaAlbum 
+                if generos:
+                    for genero in generos:
+                        self.generos.append(genero)
+                        print(genero)
+                    
                 return True
             return False
         

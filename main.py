@@ -43,7 +43,6 @@ def Login():
 @app.route("/register", methods=["GET","POST"])
 def Registrar():
     #Pegar os dados do usuario e checar
-
     if request.method == "POST":
         data = request.json
         nome = data.get("nome")

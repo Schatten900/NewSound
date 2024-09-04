@@ -21,9 +21,13 @@ class CntrlSMusica:
             # Se a musica existe no banco, adicione ela a musicaSalvas
             result,CodMusica = self.pesquisarMusica(nomeMusica,artista)
             if result:
-                print(CodMusica)
-                print("Devemos adicionar a musica ja existente")
-                return container.adicionarMusicaSalvas(codUser,CodMusica)
+                print(f"Codigo obtido: {CodMusica}")
+                print("Devemos adicionar a musica ja existente no BD")
+                result = self.checkMusicaSalvas(codUser,CodMusica)
+                if not result:
+                    return container.adicionarMusicaSalvas(codUser,CodMusica)
+                print("Ja existe essa musica salva")
+                return True
     
             else:
                 print("Musica nao existe na BD, vamos adiciona-la")
@@ -103,6 +107,10 @@ class CntrlSMusica:
         #Pesquisa se a musica existe no banco de dados ou nao
         container = ContainerMusica()
         return container.pesquisarMusica(nomeMusica,artista)
+    
+    def checkMusicaSalvas(self,codUser,codMusica):
+        container = ContainerMusica()
+        return container.checkMusicaSalvas(codUser,codMusica)
 
 class ContainerMusica:
     def adicionarMusicaSalvas(self,codUser,codMusica):
@@ -225,4 +233,19 @@ class ContainerMusica:
 
         except Exception as e:
             print(f"Houve um erro ao remover: {e}")
+            return False
+        
+    def checkMusicaSalvas(self,codUser,codMusica):
+        try:
+            QUERY = """
+            SELECT * FROM MusicasSalvas WHERE codUser = %s and codMusica = %s
+            """
+            params = (codUser,codMusica)
+            result = executeQuery(QUERY,params)
+            if result:
+                return True
+            return False
+
+        except Exception as e:
+            print(f"Erro ao checar a musica existente no usuario {e}")
             return False
