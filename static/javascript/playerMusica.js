@@ -33,7 +33,6 @@ function tocarMusica(event, endpoint) {
 
 function embaralharMusicas(event, endpoint) {
     event.preventDefault();
-
     const requestData = {
         action: "embaralhar",
     };
@@ -79,49 +78,12 @@ document.addEventListener("DOMContentLoaded", function () {
         audio.pause();
     });
 
-    proxButtom.addEventListener('click',()=>{
+    proxButtom.addEventListener('click', () => {
 
     })
 
-    prevButtom.addEventListener('click',()=>{
-        
+    prevButtom.addEventListener('click', () => {
+
     })
-    
 
 });
-
-
-function removerMusica(event,endpoint){
-    event.preventDefault();
-
-    let musicaCod = event.currentTarget.getAttribute('data-music-cod');
-    const requestData = {
-        action: "remove",
-        CodMusic: musicaCod
-    };
-    console.log(musicaCod)
-
-    let musicaURL = `http://${window.location.host}/${endpoint}`;
-
-    fetch (musicaURL,{
-        method:"POST",
-        headers:{
-            "Content-Type":"application/json"
-        },
-        body:JSON.stringify(requestData)
-    })
-    .then(response=>{
-        if (!response.ok)
-            throw new Error("Erro ao excluir musica", response.status);
-        return response.json();
-    })
-    .then(data=>{
-        if (data.status !== success){
-            console.log("Houve um erro na exclusao");
-        }
-        else{
-            window.location.href = data.redirect;
-        }
-    })
-    .catch(error=>console.error("Erro achado: ",error));
-}

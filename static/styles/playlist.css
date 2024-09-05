@@ -225,3 +225,14 @@ body {
     flex-direction: row;
     padding-right: 5px;
 }
+
+
+#favoriteButtomMusic{
+    display: flex;
+    flex-direction: row;
+    padding-right: 5px;
+}
+
+#favoriteButtomMusic i{
+    color: rgb(190, 190, 190);
+}

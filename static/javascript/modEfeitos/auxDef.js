@@ -1,3 +1,15 @@
+//Funcao para mostrar o form de adicionar musicas
+function addFormPlaylist() {
+    const form = document.getElementById("addFormMusicPlaylist");
+    if (form.style.display === "none") {
+        form.style.display = "block";
+    }
+    else {
+        form.style.display = "none";
+    }
+}
+
+//Funcao para redirecionar pra artista x
 function enviarArtista(event) {
     event.preventDefault();
     let artistaURL = `http://${window.location.host}/artista`;
@@ -30,4 +42,9 @@ function enviarArtista(event) {
             }
         })
         .catch(error => console.error("Erro achado: ", error));
+}
+
+//Funcao visual para expandir musicas do album
+function expandir(event, endpoint) {
+    event.preventDefault();
 }

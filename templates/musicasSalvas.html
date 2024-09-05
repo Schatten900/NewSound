@@ -17,7 +17,8 @@
         </div>
 
         <div>
-            <button id="embaralharPlaylistButtom" onclick="embaralharMusicas(event,'musicasSalvas')">Embaralhar </button>
+            <button id="embaralharPlaylistButtom" onclick="embaralharMusicas(event,'musicasSalvas')">Embaralhar
+            </button>
         </div>
 
         <div>
@@ -25,19 +26,11 @@
         </div>
         <form id="addFormMusicPlaylist">
             <div id="containerFormAddMusic">
-                <div id="showFile">
-                    <div class="containerFile">
-                        <label for="fileUpload" class="customFileUpload">
-                            Escolha uma musica
-                        </label>
-                        <input id="fileUpload" type="file" />
-                    </div>
-                </div>
 
                 <input type="text" placeholder="Nome da musica" name="musicaInput" id="musicaInput" class="inputMusic">
                 <input type="text" placeholder="Nome do artista" name="artistaInput" id="artistaInput"
                     class="inputMusic">
-                <button id="addMusicForm" onclick="addMusicInMusicSaves(event)">Adicionar</button>
+                <button id="addMusicForm" onclick="addMusicUser(event,'musicasSalvas')">Adicionar</button>
             </div>
         </form>
 
@@ -50,7 +43,8 @@
                 </div>
 
                 <div id="removeButtomMusic">
-                    <button class="circleButtom" onclick="removerMusica(event,'musicasSalvas')" data-music-cod="{{ music[0] }}">
+                    <button class="circleButtom" onclick="acoesMusicas(event,'musicasSalvas','remove')"
+                        data-music-cod="{{ music[0] }}">
                         <i class="fas fa-trash-alt"></i>
                     </button>
                 </div>
@@ -82,7 +76,9 @@
     </div>
 
 </body>
-<script src="{{url_for('static',filename='javascript/playlistForm.js')}}"></script>
-<script src="{{url_for('static',filename='javascript/tocarMusica.js')}}"></script>
+<script src="{{url_for('static',filename='javascript/modMusicas/acoesMusica.js')}}"></script>
+<script src="{{url_for('static',filename='javascript/modMusicas/adicaoMusicas.js')}}"></script>
+<script src="{{url_for('static',filename='javascript/modEfeitos/auxDef.js')}}"></script>
+<script src="{{url_for('static',filename='javascript/playerMusica.js')}}"></script>
 
 </html>

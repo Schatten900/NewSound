@@ -12,9 +12,9 @@
     <div id="containerUsuarioActions">
         <div id="infoUsuario">
             {%if Imagem %}
-                <img src="{{Imagem}}" alt="capa do usuario" id="capaUsuario">
+            <img src="{{Imagem}}" alt="capa do usuario" id="capaUsuario">
             {% else %}
-                <img src="{{url_for('static',filename='images/anonimo.png')}}" alt="capa do usuario" id="capaUsuario">
+            <img src="{{url_for('static',filename='images/anonimo.png')}}" alt="capa do usuario" id="capaUsuario">
             {% endif %}
             <label id="tituloUsuario">{{Usuario[1]}}</label>
             <label id="emailUsuario">{{Usuario[3]}}</label>
@@ -40,19 +40,20 @@
 
             <div>
                 <button id="excluirContaButtom" class="usuarioFormButtom"
-                    onclick="Redirecionar(event,'excluir')">Excluir conta</button>
+                    onclick="Redirecionar(event,'usuario','excluir')">Excluir conta</button>
             </div>
             <div>
                 <button id="playlistCreationButtom" class="usuarioFormButtom"
-                    onclick="Redirecionar(event,'playlist')">Playlists criadas</button>
+                    onclick="Redirecionar(event,'usuario','playlist')">Playlists criadas</button>
             </div>
             <div>
-                <button id="musicSalvaButtom" class="usuarioFormButtom" onclick="Redirecionar(event,'musicas')">Musicas
+                <button id="musicSalvaButtom" class="usuarioFormButtom"
+                    onclick="Redirecionar(event,'usuario','musicas')">Musicas
                     salvas</button>
             </div>
         </form>
     </div>
-    <script src="{{url_for('static',filename='javascript/usuarioForm.js')}}"></script>
+    <script src="{{url_for('static',filename='javascript/modUsuario/usuarioForm.js')}}"></script>
 </body>
 
 </html>

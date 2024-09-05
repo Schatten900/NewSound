@@ -57,9 +57,9 @@ function SaveEditUser(event) {
         })
 }
 
-function Redirecionar(event,acao){
+function Redirecionar(event,endpoint,acao){
     event.preventDefault();
-    let userUrl = `http://${window.location.host}/usuario`;
+    let userUrl = `http://${window.location.host}/${endpoint}`;
     const formData = new FormData()
     formData.append("action",acao);
     fetch(userUrl, {

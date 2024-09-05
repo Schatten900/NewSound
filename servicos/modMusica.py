@@ -8,8 +8,8 @@ class CntrlSMusica:
     def getMusic(self):
         return self.music
 
-    def adicionarMusica(self,nomeMusica,artista,codUser,musicaMP3=None):
-        #Adiciona musica ao banco de dados Musica ou somente em musicas salvas
+    def adicionarMusicaBD(self,nomeMusica,artista,musicaMP3):
+        #Adiciona musica ao banco de dados Musica 
         try:
             musica = self.getMusic()
             existe = musica.setCancao(artista,nomeMusica)
@@ -22,11 +22,11 @@ class CntrlSMusica:
             result,CodMusica = self.pesquisarMusica(nomeMusica,artista)
             if result:
                 print(f"Codigo obtido: {CodMusica}")
-                print("Devemos adicionar a musica ja existente no BD")
-                result = self.checkMusicaSalvas(codUser,CodMusica)
-                if not result:
-                    return container.adicionarMusicaSalvas(codUser,CodMusica)
-                print("Ja existe essa musica salva")
+                print("Já existe a musica no BD")
+                #result = self.checkMusicaSalvas(codUser,CodMusica)
+                #if not result:
+                #    return container.adicionarMusicaSalvas(codUser,CodMusica)
+                #print("Ja existe essa musica salva")
                 return True
     
             else:
@@ -70,7 +70,7 @@ class CntrlSMusica:
                     if resultMusica:
                         #Adiciona a musica salva pelo usuario 
                         print("existe na MusicaBD")
-                        return container.adicionarMusicaArtista(codMusica,codArtista) and container.adicionarMusicaSalvas(codUser,codMusica)
+                        return container.adicionarMusicaArtista(codMusica,codArtista)
                     print("Deu erro na BD")
                     return False
                 else:
@@ -81,13 +81,17 @@ class CntrlSMusica:
                     if resultMusica:
                         print("Adicionou na musicaBD sem album")
                         #Adiciona a musica salva pelo usuario 
-                        return container.adicionarMusicaArtista(codMusica,codArtista) and container.adicionarMusicaSalvas(codUser,codMusica)
+                        return container.adicionarMusicaArtista(codMusica,codArtista)
                     print("Deu erro ao adicionar sem album")
                     return False
 
         except ValueError as e:
             print(f"Erro ao adicionar no banco de dados: {e}")
             return False
+        
+    def adicionarMusicaSalvas(self,codUser,codMusica):
+        container = ContainerMusica()
+        return container.adicionarMusicaSalvas(codUser,codMusica)
         
     def obterMP3(self,idMusica):
         container = ContainerMusica()

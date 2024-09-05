@@ -46,6 +46,10 @@ class CntrlSArtista:
     def listarAlbuns(self,codArtista):
         container = ContainerArtista()
         return container.listarAlbuns(codArtista)
+    
+    def viewAlbumMusica(self,codArtista):
+        container = ContainerArtista()
+        return container.viewAlbumMusica(codArtista)
 
 
 class ContainerArtista:
@@ -192,4 +196,19 @@ class ContainerArtista:
         
         except Exception as e:
             print(f"Erro ao listar musicas do album {e}")
+            return None
+        
+    def viewAlbumMusica(self,idArtista):
+        try:
+            QUERY = """
+                SELECT * FROM AlbunsMusicas WHERE CodArtista = %s
+            """
+            params = (idArtista,)
+            result = executeQuery(QUERY, params)
+            if result:
+                return result
+            return None
+
+        except Exception as e:
+            print(f"Erro ao char a view do banco de dados {e}")
             return None

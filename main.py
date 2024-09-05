@@ -72,7 +72,7 @@ def Registrar():
 @app.route("/usuario",methods=["GET","POST"])
 def UsuarioPage():
     if not session["userID"]:
-        return redirect("Login")
+        return redirect(url_for('Login'))
     if request.method == "POST":
         action = request.form.get("action")
         if action == "edit":
@@ -141,7 +141,7 @@ def Home():
 @app.route("/home", methods=["GET", "POST"])
 def HomeRedirect():
     if 'userID' not in session or not session["userID"]:
-        return redirect("Login")
+        return redirect(url_for('Login'))
     if request.method == "POST":
         action = request.form.get("action")
         if action == "login":
@@ -175,8 +175,9 @@ def MusicasSalvas():
     #endpoint para navegar pelas musicas salvas pelo usuario
     #Fazer select do banco de dados
     if 'userID' not in session or not session["userID"]:
-        return redirect("Login")
-    idUsuario = session["userID"]
+        return redirect(url_for('Login'))
+    
+    codUsuario = session["userID"]
     controladora = CntrlSMusica()
     if request.method == "POST":
         if request.form.get("action"):
@@ -189,25 +190,23 @@ def MusicasSalvas():
             print(action)
 
         if action == "add":
-            musica = request.files.get("musica")
-            if musica:
-                musica_blob = musica.read()
-                print("Musica Enviada")
-                adicionou = controladora.adicionarMusica(nameMusic,nameArtista,idUsuario,musica_blob)
+            nameMusic = data.get("musicName")
+            nameArtista = data.get("artistaName")
+            result,codMusica = controladora.pesquisarMusica(nameMusic,nameArtista)
+            if result:
+                adicionou = controladora.adicionarMusicaSalvas(codUsuario,codMusica)
+                if adicionou:
+                    print(adicionou)
+                    return jsonify({"message":"Adicionado com sucesso","status":"success","redirect":url_for("MusicasSalvas")}),200
+                else:
+                    return jsonify({"message":"Houve um erro na adicao","status":"fail"}),401
             else:
-                print("Checa a musica")
-                adicionou = controladora.adicionarMusica(nameMusic,nameArtista,idUsuario)
-            
-            if adicionou:
-                print("Adicionado com sucesso")
-                return jsonify({"message":"Adicao feita com sucesso","status":"success","redirect":url_for("MusicasSalvas")}),200
-            
-            return jsonify({"message":"Erro ao adicionar musica","status":"fail"}),401
+                return jsonify({"message":"Musica nao existe no banco","status":"fail"}),401
         
         elif action == "remove":
             data = request.json
             removeMusicaCod = data.get("CodMusic")
-            removeu = controladora.removerMusicaSalvas(idUsuario,removeMusicaCod)
+            removeu = controladora.removerMusicaSalvas(codUsuario,removeMusicaCod)
             if removeu:
                 return jsonify({"message":"Removido com sucesso","status":"success","redirect":url_for("MusicasSalvas")}),200
             return jsonify({"message":"Houve um erro na remoção","status":"fail"}),401
@@ -229,7 +228,7 @@ def MusicasSalvas():
             return send_file(io.BytesIO(mp3Arquivo), mimetype='audio/mpeg', as_attachment=False, download_name='musica.mp3')
         
         elif action == "embaralhar":
-            musicasSalvas = controladora.listarMusicasSalvas(idUsuario)
+            musicasSalvas = controladora.listarMusicasSalvas(codUsuario)
             musicas = musicasSalvas
             codigos = []
             musicasBlob = []
@@ -259,7 +258,7 @@ def MusicasSalvas():
             print(f"Acao invalida: {action}")
             return jsonify({"message":"ocorreu um erro inesperado","status":"fail"}),401
     else: 
-        musicas = controladora.listarMusicasSalvas(idUsuario)
+        musicas = controladora.listarMusicasSalvas(codUsuario)
         if musicas:
             return render_template("musicasSalvas.html",Musicas=musicas)
         return render_template("MusicasSalvas.html")
@@ -267,7 +266,7 @@ def MusicasSalvas():
 #################################################
 
 #Logica a ser desenvolvida em controladora e redirecionamento 
-#Ricardo/Carlos
+#Ricardo
 @app.route("/playlistUser")
 def PlaylistCriadas():
     #Fazer select do banco de dados das playlist criadas pelo usuario
@@ -277,7 +276,7 @@ def PlaylistCriadas():
     #playlists = controladora.pesquisarPlaylist(idUsuario)e
     #criar o redirecionamento para o PlaylistUsuario/idPlaylist
     if 'userID' not in session or not session["userID"]:
-        return redirect("Login")
+        return redirect(url_for('Login'))
 
     if request.method == "POST":
         #logica pra pegar o id pelo click na musica
@@ -292,7 +291,7 @@ def PlaylistCriadas():
 def playlistUsuario(id_playlist):
     #Adicao, seleção e remoção  relacionadas a uma playlist criada pelo usuario
     if 'userID' not in session or not session["userID"]:
-        return redirect("Login")
+        return redirect(url_for('Login'))
     
     if request.method == "POST":
         controladora = CntrlSPlaylist()
@@ -305,14 +304,7 @@ def playlistUsuario(id_playlist):
             musica_blob = musica.read()
         if action == "add":
             pass
-            #adicionar musica na playlist
-            #if musica:
-                #controladora.adicionarMusica(nameMusic,nameArtista,id_playlist,musica_blob)
-            #else:
-                #controladora.adicionarMusica(nameMusic,nameArtista,id_Playlist)
         else:
-            #remover musica da playlist
-            #controladora.removerMusica(nameMusic,nameArtista,id_playlist)
             pass
     else:
         #Fazer select do banco de dados, musicas e titulo da playlist
@@ -322,32 +314,12 @@ def playlistUsuario(id_playlist):
     
 ############################################    
 
-#Ricardo
-@app.route("/album/<idAlbum>")
-def AlbumMusicas(idAlbum):
-    #listar todas as musicas vinculadas à aquele album
-    #Somente seleção ate então
-    if 'userID' not in session or not session["userID"]:
-        return redirect("Login")
-    controladora = CntrlSArtista()
-    if request.method == "POST":
-        pass
-
-    else:
-        musicas = controladora.musicasAlbum(idAlbum)
-        if musicas:
-            return render_template("MusicasAlbum.html",Musicas=musicas)
-        return render_template("MusicasAlbum.html")
-
-###############################################################
-
 #Carlos 
 @app.route("/artista",methods=["GET","POST"])
 def ArtistasPage():
     #Seleção de artistas salvas na aplicação
     if 'userID' not in session or not session["userID"]:
-        return redirect("Login")
-    
+        return redirect(url_for('Login'))
     if request.method == "POST":
         data = request.json
         action = data.get("action")
@@ -369,27 +341,64 @@ def ArtistasPageSongs(idArtista):
     #Logica para pesquisar albuns do artista
     #nome do artista,album,imagem
     if 'userID' not in session or not session["userID"]:
-        return redirect("Login")
-    #Logica para pesquisar albuns e musicas vinculadas a aquele album por meio de uma view
+        return redirect(url_for('Login'))
     
+    codUsuario = session["userID"]
     controladora = CntrlSArtista()
+    controladoraMusicas = CntrlSMusica()
     if request.method == "POST":
-        #Logica para redirecionar o usuario para as musicas vinculadas aquele album
         data = request.json
         action = data.get("action")
-        if action == "enviar":
-            codAlbum = data.get("codAlbum")
-            if codAlbum:
-                return jsonify({"message":"Redirecionado com sucesso","status":"success","redirect":url_for("AlbumMusicas",idAlbum = codAlbum)}),200
-            return jsonify({"message":"Erro ao redirecionar","status":"fail"}),401
-        else:
-            return jsonify({"message":"Acao invalida","status":"fail"}),401
+        if action == "tocar":
+            primeiraMusicaCod = data.get("CodMusic")
+            print(f"Codigo obtido: {primeiraMusicaCod}")
+
+            mp3Primeira = controladoraMusicas.obterMP3(primeiraMusicaCod)
+            if not mp3Primeira:
+                return jsonify({"message":"ocorreu um erro ao pegar Musica","status":"fail"}),401
+            #Tocar a musica que o usuario escolheu
+            #Converter o mp3 do BD para arquivo
+            mp3Arquivo = mp3Primeira[0]
+
+            #Retorna a musica para o navegador poder reproduzir
+            #Codifica em bytes, permite que seja enviado em forma mp3, nao deixa ser baixado e nome do objeto
+            return send_file(io.BytesIO(mp3Arquivo), mimetype='audio/mpeg', as_attachment=False, download_name='musica.mp3')
+        
+        if action == "favoritar":
+            primeiraMusicaCod = data.get("CodMusic")
+            adicionou = controladoraMusicas.adicionarMusicaSalvas(codUsuario,primeiraMusicaCod)
+            if adicionou:
+                print("Favoritado com sucesso")
+                return jsonify({"message":"favoritou com sucesos","status":"success","redirect":url_for("ArtistasPageSongs",idArtista = idArtista)}),200
+            return jsonify({"message":"favoritou nao deu certo","status":"fail"}),401
+
     else:
-        #Pesquisar os albuns vinculados ao a rtista
-        album =controladora.listarAlbuns(idArtista)
-        if album:
-            return render_template("artistaAlbum.html",informacoes=album)
-        return render_template("ArtistaAlbum.html")
+        #Logica para pesquisar albuns e musicas vinculadas a aquele album por meio de uma view
+        informacoes = controladora.viewAlbumMusica(idArtista)
+        if informacoes:
+            #Criar um dicionario de albuns e musicas
+            album = {}
+            capas = []
+            for info in informacoes:
+                musicaNome = info[0]
+                musicaArtista = info[1]
+                albumNome = info[2]
+                capaAlbum = info[3]
+                codMusica = info[5]
+                musicaInfo = (musicaNome,musicaArtista,codMusica)
+
+                #Checa se a tupla de informações existe dentro do album
+                if albumNome not in album:
+                    album[albumNome] = []
+
+                if musicaInfo not in album[albumNome]:
+                    album[albumNome].append(musicaInfo)
+
+                if capaAlbum not in capas:
+                    capas.append(capaAlbum)
+
+            return render_template("artistaAlbum.html",informacoes=album,titulo=musicaArtista,listaCapa=capas,codArtista=idArtista)
+        return render_template("ArtistaAlbum.html") 
 
 if __name__ == "__main__":
     app.run(debug=True, port=8000)

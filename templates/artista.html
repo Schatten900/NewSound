@@ -16,7 +16,7 @@
 
         <main id="ArtistasLista">
             {% for artista in Artistas %}
-            <div id="artistaBD" onclick= "enviarArtista(event)" data-artista-cod="{{ artista[0] }}">
+            <div id="artistaBD" onclick="enviarArtista(event)" data-artista-cod="{{ artista[0] }}">
                 <div id="containerInfoArtista">
                     <img src="{{artista[2]}}" id="capaArtista">
                     <label id="nameArtista">{{artista[1]}}</label>
@@ -25,7 +25,7 @@
             {% endfor %}
         </main>
     </div>
-    <script src="{{url_for('static',filename='javascript/enviarArtista.js')}}"></script>
+    <script src="{{url_for('static',filename='javascript/modEfeitos/auxDef.js')}}"></script>
 
 </body>
 
