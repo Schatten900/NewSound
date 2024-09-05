@@ -1,0 +1,12 @@
+CREATE VIEW AlbunsMusicas AS
+SELECT 
+    M.Nome AS nomeMusica,
+    A.Nome AS nomeArtista,
+    AL.Nome AS nomeAlbum,
+    AL.CapaAlbum,
+    AL.CodArtista,
+    M.CodMusica
+FROM ALBUM AS AL
+INNER JOIN Musica AS M ON M.CodAlbum = AL.CodAlbum
+INNER JOIN Artista AS A ON A.CodArtista = AL.CodArtista
+ORDER BY AL.Nome ASC, M.Nome ASC;

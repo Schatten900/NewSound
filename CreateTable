@@ -9,7 +9,7 @@ FotoPerfil MEDIUMBLOB
 CREATE TABLE Artista(
 CodArtista INT AUTO_INCREMENT,
 Nome VARCHAR(50) NOT NULL,
-ArtistaMiniatura MEDIUMBLOB,
+ArtistaMiniatura VARCHAR(80),
 PRIMARY KEY (CodArtista) 
 );
 
@@ -17,7 +17,7 @@ CREATE TABLE Album(
 CodAlbum INT AUTO_INCREMENT,
 CodArtista INT NOT NULL,
 Nome VARCHAR(50) NOT NULL,
-CapaAlbum MEDIUMBLOB,
+CapaAlbum VARCHAR(80),
 PRIMARY KEY (CodAlbum), 
 FOREIGN KEY (CodArtista) REFERENCES Artista(CodArtista)
 );
