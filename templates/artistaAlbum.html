@@ -19,26 +19,26 @@
 
         <main id="ArtistaAlbumLista">
             {% for album,musicas in informacoes.items() %}
-            <div id="albumBD" onclick="expandir(event,'artista/{{codArtista}}')">
+            <div id="albumBD" onclick="expandir()">
                 <div id="containerInfoAlbum">
                     <img src="{{listaCapa[loop.index0]}}" id="capaAlbum">
                     <label id="nameAlbum">{{album}}</label>
                 </div>
             </div>
-            {% for musica in musicas %}
-            <div id="musicBD" onclick="tocarMusica(event,'artista/{{codArtista}}')" data-music-cod="{{ musica[2] }}">
-                <div id="containerInfoMusicBD">
-                    <label id="nameMusic">{{musica[0]}}</label>
-                    <label id="nameArtistaMusic">{{musica[1]}}</label>
+                {% for musica in musicas %}
+                <div id="musicBD" onclick="tocarMusica(event,'artista/{{codArtista}}')" data-music-cod="{{ musica[2] }}">
+                    <div id="containerInfoMusicBD">
+                        <label id="nameMusic">{{musica[0]}}</label>
+                        <label id="nameArtistaMusic">{{musica[1]}}</label>
+                    </div>
+                    <div id="favoriteButtomMusic">
+                        <button class="circleButtom" onclick="acoesMusicas(event,'artista/{{codArtista}}','favoritar')"
+                            data-music-cod="{{ musica[2] }}">
+                            <i class="fa-solid fa-star"></i>
+                        </button>
+                    </div>
                 </div>
-                <div id="favoriteButtomMusic">
-                    <button class="circleButtom" onclick="acoesMusicas(event,'artista/{{codArtista}}','favoritar')"
-                        data-music-cod="{{ musica[2] }}">
-                        <i class="fa-solid fa-star"></i>
-                    </button>
-                </div>
-            </div>
-            {% endfor %}
+                {% endfor %}
             {% endfor %}
         </main>
     </div>

@@ -32,7 +32,6 @@ class CntrlSArtista:
         #Pesquisa as musicas vinculadas ao album x 
         container = ContainerArtista()
         return container.musicasAlbum(idAlbum)
-
     
     def adicionarAlbum(self,nomeAlbum,idArtista,capaAlbum):
         #Adiciona o album no banco de dados
@@ -53,7 +52,6 @@ class CntrlSArtista:
 
 
 class ContainerArtista:
-
     def checkArtista(self,nomeArtista):
         try:
             QUERY = """

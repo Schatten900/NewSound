@@ -10,3 +10,32 @@ FROM ALBUM AS AL
 INNER JOIN Musica AS M ON M.CodAlbum = AL.CodAlbum
 INNER JOIN Artista AS A ON A.CodArtista = AL.CodArtista
 ORDER BY AL.Nome ASC, M.Nome ASC;
+
+DELIMITER // 
+
+CREATE PROCEDURE ApagarPlaylistsUser(IN codUserParam INT)
+BEGIN
+	START TRANSACTION;
+    
+	CREATE TABLE IF NOT EXISTS TempDeletePlaylist(codPlaylist INT);
+    
+    INSERT INTO TempDeletePlaylist (codPlaylist)
+    SELECT CodPlaylist
+    FROM PlaylistUsuario
+    WHERE CodUser = codUserParam;
+    
+    DELETE FROM playlistusuario WHERE CodUser = codUserParam;
+    
+	DELETE FROM PlaylistMusica
+    WHERE CodPlaylist IN (SELECT CodPlaylist FROM TempDeletePlaylist);
+    
+    DELETE FROM Playlist
+    WHERE CodPlaylist IN (SELECT CodPlaylist FROM TempDeletePlaylist);
+
+	DROP TABLE TempDeletePlaylist;
+    COMMIT;
+END //
+
+#DELIMITER;
+
+

@@ -59,7 +59,6 @@ def Registrar():
         else:
             return jsonify({"message":"falha ao registrar usuario","status":"fail"}),401
         
-    
     #Mostrar a tela de registro
     elif request.method == "GET":
         return render_template("register.html")
@@ -73,10 +72,11 @@ def Registrar():
 def UsuarioPage():
     if not session["userID"]:
         return redirect(url_for('Login'))
+    codUser = session["userID"]
     if request.method == "POST":
+        controladora = CntrlSConta()
         action = request.form.get("action")
         if action == "edit":
-            id = session["userID"]
             nome = request.form.get("nome")
             email = request.form.get("email")
             imagem = request.files.get("imagem")
@@ -90,8 +90,7 @@ def UsuarioPage():
                 dicionario["FotoPerfil"] = imagem_blob
 
             #logica para receber dicionario e editar o usuario no banco de dados
-            controladora = CntrlSConta()
-            if controladora.editar(id,dicionario):
+            if controladora.editar(codUser,dicionario):
                 if "Email" in dicionario:
                     session["emailUser"] = dicionario["Email"]
 
@@ -104,7 +103,12 @@ def UsuarioPage():
         elif action == "excluir":
             #logica para excluir usuario do banco de dados
             #para poder excluir a conta, deve-se excluir musicas salvas e playlist usuario
-            return jsonify({"message":"exclusao valida","status":"success","redirect":url_for("UsuarioPage")}),200
+            result = controladora.excluir(codUser)
+            if result:
+                #Desconectar o usuario
+                session.clear()
+                return jsonify({"message":"exclusao valida","status":"success","redirect":url_for("Login")}),200
+            return jsonify({"message":"Remoção invalida","status":"fail"}),401
         
         elif action == "playlist":
             #Redirecionar para playlists do usuario
@@ -118,8 +122,7 @@ def UsuarioPage():
     else:
         #Metodo GET, mostrar usuario na tela
         controladora = CntrlSConta()
-        id = session["userID"]
-        usuario = controladora.ler(id)
+        usuario = controladora.ler(codUser)
         imagem = usuario[4]
         if imagem:
             #decodifica a imagem em base 64

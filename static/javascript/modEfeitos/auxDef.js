@@ -45,6 +45,14 @@ function enviarArtista(event) {
 }
 
 //Funcao visual para expandir musicas do album
-function expandir(event, endpoint) {
-    event.preventDefault();
+function expandir() {
+    const form = document.getElementById("formMusicContainer");
+    console.log("10000");
+    if (form.style.display === "none") {
+        form.style.display = "block";
+    }
+    else {
+        form.style.display = "none";
+    }
+    console.log("Bloqueou")
 }

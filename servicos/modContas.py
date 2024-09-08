@@ -71,11 +71,12 @@ class CntrlSConta:
             return True
         return False
 
-    def excluir(self):
-        conta = self.getConta()
-        email = conta.getEmail().get()
+    def excluir(self,idUser):
         container = ContainerConta()
-        container.excluir(email)
+        if container.excluirPlaylistUser(idUser):
+            #Excluir todas as playlists vinculadas aquele codigo
+            return container.excluirConta(idUser)
+        return False
 
 #Acessa o banco de dados e faz as operacoes
 class ContainerConta:
@@ -156,7 +157,32 @@ class ContainerConta:
             print(e)
             return False
         
-
-    def excluir(self,email):
+    def excluirConta(self,idUser):
         #logica para excluir conta do usuario no banco
-        pass
+        #Talvez usar uma procedure para excluir o restante das playlists
+        try:
+            QUERY = """
+                DELETE FROM Usuario WHERE CodUser = %s
+            """
+            params = (idUser)
+            executeQuery(QUERY,params)
+            return True
+
+        except Exception as e:
+            print(f"Houve um erro ao excluir a conta {e}")
+            return False
+        
+    def excluirPlaylistUser(self,idUser):
+        #logica para excluir playlist do usuario no banco
+        try:
+            QUERY = """
+                CALL ApagarPlaylistsUser(%s)
+            """
+            params = (idUser,)
+            executeQuery(QUERY,params)
+            print("Excluido com sucesso")
+            return True
+
+        except Exception as e:
+            print(f"Houve um erro ao excluir a conta {e}")
+            return False
