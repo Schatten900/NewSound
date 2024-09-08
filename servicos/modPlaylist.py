@@ -5,10 +5,7 @@ class CntrlSPlaylist:
     def __init__(self):
         self.music = Cancao()
 
-    def getMusic(self):
-        return self.music
-
-    def adicionarMusicaPlaylist(self, artista, nomeMusica, codMusica, codPlaylist):
+    def adicionarMusica(self,musicaNome,artista,idPlaylist,musica=None):
         #adiciona uma musica aquela playlist
         try:
             musica = self.getMusic()
@@ -84,62 +81,14 @@ class ContainerPlaylist:
             print(f"Erro ao inserir no banco MusicasSalvas: {e}")
             return False
 
-    def removerMusica(self, codMusica, codPlaylist):
-        try:
-            QUERY = """
-            DELETE FROM PlaylistMusica 
-            WHERE CodMusica = %s AND CodPlaylist = %s
-            """
-            params = (codMusica, codPlaylist)
-            executeQuery(QUERY,params)
-            return True
+    def removerMusica(self,musica,artista,idPlaylist):
+        pass
 
-        except ValueError as e:
-            print(f"Erro ao inserir no banco MusicasSalvas: {e}")
-            return False
+    def pesquisarMusica(self,idPlaylist):
+        pass
 
-    def pesquisarMusicas(self, codPlaylist):
-        try:
-            QUERY = """
-            SELECT CodMusica FROM PlaylistMusica WHERE CodPlaylist = %s
-            """
-            params = (codPlaylist)
-            return executeQuery(QUERY,params)
-
-        except ValueError as e:
-            print(f"Erro ao inserir no banco MusicasSalvas: {e}")
-            return False
-        
-    def pesquisarMusica(self,codMusica):
-        try:
-            QUERY = """
-            SELECT CodMusica FROM Musica WHERE CodMusica = %s
-            """
-            params = (codMusica)
-            return executeQuery(QUERY,params)
-
-        except ValueError as e:
-            print(f"Erro ao inserir no banco MusicasSalvas: {e}")
-            return False
-
-    def criarPlaylist(self, codPlaylist, nomePlaylist, codUser):
-        try:
-            QUERY1 = """
-            INSERT INTO Playlist (CodPlaylist, Nome) VALUES (%s,%s)
-            """
-            params1 = (codPlaylist, nomePlaylist)
-            executeQuery(QUERY1,params1)
-
-            QUERY2 = """
-            INSERT INTO PlaylistUsuario (CodUser, CodPlaylist) VALUES (%s,%s)
-            """
-            params2 = (codUser, codPlaylist)
-            executeQuery(QUERY2,params2)
-            return True
-
-        except ValueError as e:
-            print(f"Erro ao inserir no banco MusicasSalvas: {e}")
-            return False
+    def adicionarPlaylist(self,idPlaylist):
+        pass
 
     def editarPlaylist(self,idPlaylist):
         pass
