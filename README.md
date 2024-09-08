@@ -33,6 +33,8 @@ Funcionalidades do app:
 
 6) View: Permite a visualização de albuns e seus artistas vinculados (Carlos)
 
+7) Procedure: Permite que o usuario possa excluir todas as playlists vinculadas a si.
+
 
 Informacoes para apresentação:
 API_ID=e10e16b09ea44e53bf93b99968f1eb5b
