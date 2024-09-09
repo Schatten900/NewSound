@@ -38,4 +38,15 @@ END //
 
 #DELIMITER;
 
-
+CREATE VIEW MusicaNavegar AS
+SELECT 
+    Musica.Nome AS NomeMusica,
+    Artista.Nome AS NomeArtista,
+    Album.Nome AS NomeAlbum,
+    Genero.Nome AS NomeGenero
+FROM Musica
+JOIN Album AS AL ON Musica.CodAlbum = AL.CodAlbum
+JOIN ArtistaMusica AS AM ON Musica.CodMusica = AM.CodMusica
+JOIN Artista AS A ON AM.CodArtista = A.CodArtista
+JOIN MusicaGenero AS MG ON Musica.CodMusica = MG.CodMusica
+JOIN Genero AS G ON MG.CodGenero = G.CodGenero;
