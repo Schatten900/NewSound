@@ -168,9 +168,55 @@ def HomeRedirect():
                 return redirect(url_for('Login'))
     return render_template("home.html")
 
-@app.route("/navegar")
+@app.route("/navegar", methods=["GET", "POST"])
 def NavegarPage():
-    pass
+    
+    controladora = CntrlSMusica()
+    musicas = controladora.listarTodasMusicas()
+    generos = controladora.listarGeneros()
+    #generos = [g for g in generos: g[0]]
+    codUser = session['userID']
+    print("\n>>> Codigo Usuario:", codUser)
+    print("\n>>> Generos:", generos[0], type(generos[0]))
+    
+    
+    if request.method == "POST":
+        action = request.form.get("action")
+        print("action: ", action)
+        if action == "salvarMusica":
+            #Botão de salvar a musica
+            codMusica = request.form.get('codMusica')
+            controladora.adicionarMusicaSalvas(codUser, codMusica)
+
+        if action == "add":
+            #Cadastrar uma nova musica no BD
+            m_nome = request.form.get("musicaName")
+            m_artista = request.form.get("artistaName")
+            m_enviada = request.files.get("musica")
+            #m_genero = 
+            #print("\n>>> Form lido:", m_nome, m_artista, type(m_enviada.read()))
+            if m_enviada:
+                controladora.adicionarMusicaBD(m_nome, m_artista, m_enviada.read())
+                #controladora.adicionarGeneroBD(m_genero, codMusica)
+                return jsonify({"message":"Adicionado com sucesso","status":"success","redirect":url_for("NavegarPage")}), 200
+            
+            else:
+                return jsonify({"message":"Mp3 não identificado.", "status":"fail"}), 401
+
+    if request.method == "GET":
+        #Dropdown pra pegar o genero
+        genero_escolhido = request.args.get('genre', 'Todos')  # Default para 'Todos'
+        musicas = controladora.listarMusicasGenero(genero_escolhido)
+
+    if not musicas:
+        musicas = []
+
+    if not generos:
+        generos = []        
+
+    # Renderizar a página HTML e passar a lista de músicas
+    return render_template('navegar.html', Musics=musicas, generos=generos, Title="Minhas Músicas")
+
 
 #Carlos
 @app.route("/musicasSalvas",methods=["GET","POST"])
