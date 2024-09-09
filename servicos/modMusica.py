@@ -115,7 +115,22 @@ class CntrlSMusica:
     def checkMusicaSalvas(self,codUser,codMusica):
         container = ContainerMusica()
         return container.checkMusicaSalvas(codUser,codMusica)
-
+    
+    def listarTodasMusicas(self):
+        #Lista Nome, Artista, Album, e Genero de todas as musicas cadastradas
+        container = ContainerMusica()
+        return container.listarTodasMusicas()
+    
+    def listarMusicasGenero(self, genero):
+        #Lista Nome, Artista, Album, e Genero das musicas cadastradas do genero informado
+        container = ContainerMusica()
+        return container.listarMusicasGenero(genero)
+    
+    def listarGeneros(self):
+        #Lista todos os generos cadastrados no banco (tabela Genero)
+        container = ContainerMusica()
+        return container.listarGeneros()
+    
 class ContainerMusica:
     def adicionarMusicaSalvas(self,codUser,codMusica):
         #Retorna True ou False
@@ -248,6 +263,52 @@ class ContainerMusica:
             result = executeQuery(QUERY,params)
             if result:
                 return True
+            return False
+
+        except Exception as e:
+            print(f"Erro ao checar a musica existente no usuario {e}")
+            return False
+        
+    def listarTodasMusicas(self):
+        try:
+            print("TO AQUI")
+            QUERY = """
+            SELECT * FROM MusicaNavegar
+            """
+            result = executeQuery(QUERY)
+            print("QUERY result:", result)
+            if result:
+                return result
+            return False
+
+        except Exception as e:
+            print(f"Erro ao checar a musica existente no usuario {e}")
+            return False
+        
+    def listarMusicasGenero(self, genero):
+        try:
+            QUERY = """
+            SELECT * FROM MusicaNavegar
+            WHERE NomeGenero = %s
+            """
+            params = (genero)
+            result = executeQuery(QUERY, params)
+            if result:
+                return result
+            return False
+
+        except Exception as e:
+            print(f"Erro ao checar a musica existente no usuario {e}")
+            return False
+        
+    def listarGeneros(self):
+        try:
+            QUERY = """
+            SELECT Nome FROM Genero
+            """
+            result = executeQuery(QUERY)
+            if result:
+                return result
             return False
 
         except Exception as e:
