@@ -1,5 +1,5 @@
 //Funcao para adicionar musica no banco de dados
-function addMusicInMusic(event, endpoint) {
+function addMusicInMusic(event) {
    event.preventDefault();
    const musicName = document.getElementById("musicaInput");
    const artistaName = document.getElementById("artistaInput");
@@ -18,10 +18,13 @@ function addMusicInMusic(event, endpoint) {
    if (artistaName.value)
       formData.append("artistaName", artistaName.value);
 
-   if (musica.files.length > 0)
+   if (musica.files.length > 0){
       formData.append("musica", musica.files[0]);
+      console.log("aaaaaaaaaaaaaaaaaaaa")
+   }
+      
 
-   let userUrl = `http://${window.location.host}/${endpoint}`;
+   let userUrl = `http://${window.location.host}/navegar`;
    fetch(userUrl, {
       method: "POST",
       body: formData
