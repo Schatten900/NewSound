@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="{{url_for('static',filename='styles/playlist.css')}}" rel="stylesheet">
+    <title>Playlist</title>
+</head>
+<body>
+    <div id="ContainerPlaylist">
+        <div>
+            <label id="nomePlaylistTitulo">Músicas Cadastradas</label>
+        </div>
+
+        <!--div>
+            <button id="embaralharPlaylistButton">Embaralhar</button>
+        </div-->
+
+        <form id="addFormMusicPlaylist">
+            <div id="containerFormAddMusic">
+                <div id="showFile">
+                    <div class="containerFile">
+                        <label for="fileUpload" class="customFileUpload">
+                            Escolha uma musica
+                        </label>
+                        <input id="fileUpload" type="file" />
+                    </div>
+                </div>
+                <input type="text" placeholder="Nome da musica" name="musicaInput" id="musicaInput" class="inputMusic">
+                <input type="text" placeholder="Nome do artista" name="artistaInput" id="artistaInput" class="inputMusic">
+                <div class="generosContainer" id="generosContainer">
+                    {% for genero in generos %}
+                        <div id="genreItem ">
+                            <input type="checkbox" id="generosBox{{loop.index}}" class="generosBox" label="{{genero}}"><label for="generosBox{{loop.index}}" id="generosLabel">{{genero}}</label>
+                            
+                        </div>
+                    {% endfor %}
+                </div>
+                <button id="addMusicForm" action="add" onclick="addMusicInMusic(event)">Adicionar</button>
+            </div>
+        </form>
+
+        <!-- Dropdown para filtrar por gênero -->
+        <div>
+            <form action="/navegar" method="GET">
+                <label for="genre" id="nameMusic">Filtrar por Gênero:</label>
+                <select name="genre" id="nameMusic">
+                    <option value="Todos">Todos</option>
+                    {% for genero in generos %}
+                        <option value="{{genero}}">{{genero}}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" id="filterButton">Filtrar</button>
+            </form>
+        </div>
+
+        <!-- Listagem de músicas -->
+        <main id="musicPlaylistSalvas">
+            {% for music in Musics %}
+            <div id="musicBD">
+                <!-- Botão com estrela para salvar música -->
+                <form action="/salvarMusica" method="POST">
+                    <button type="submit" class="circleButton" name="SalvarMusica">
+                        <i class="fas fa-star"></i>
+                    </button>
+                    <input type="hidden" name="codMusica" value="{{music['codigo']}}" class="hiddenInput">
+                    <input type="hidden" name="action" value="salvarMusica">
+                </form>
+
+                <!-- Informações da música -->
+                <div id="containerInfoMusicBD">
+                    <label id="nameMusic">{{music['titulo']}}</label>
+                    <label id="nameArtistaMusic">{{music['artista']}}</label>
+                    <label id="nameGeneroMusic">{{music['genero']}}</label>
+                </div>
+            </div>
+            {% endfor %}
+        </main>
+    </div>
+</body>
+<script src="{{url_for('static',filename='javascript/playlistForm.js')}}"></script>
+<script src="{{url_for('static',filename='javascript/modMusicas/adicaoMusicas.js')}}"></script>
+</html>
