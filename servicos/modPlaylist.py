@@ -176,7 +176,7 @@ class ContainerPlaylist:
     def pesquisarPlaylist(self, codUser):
         try:
             QUERY = """
-            SELECT P.Nome 
+            SELECT P.CodPlaylist, P.Nome 
             FROM Playlist P
             INNER JOIN PlaylistUsuario PU ON P.CodPlaylist = PU.CodPlaylist
             WHERE PU.CodUser = %s
