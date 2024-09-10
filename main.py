@@ -316,24 +316,38 @@ def MusicasSalvas():
 
 #Logica a ser desenvolvida em controladora e redirecionamento 
 #Ricardo
-@app.route("/playlistUser")
+@app.route("/playlistUser",methods=["GET","POST"])
 def PlaylistCriadas():
     #Fazer select do banco de dados das playlist criadas pelo usuario
     #CRUD Completo
-    #idUsuario = session["userID"]
-    #controladora = CntrlSPlaylist()
-    #playlists = controladora.pesquisarPlaylist(idUsuario)e
+    idUsuario = session["userID"]
+    controladora = CntrlSPlaylist()
+    playlists = controladora.pesquisarPlaylist(idUsuario)
+    codUser = session['userID']
+    
+    print("playlists:", playlists)
+    
     #criar o redirecionamento para o PlaylistUsuario/idPlaylist
     if 'userID' not in session or not session["userID"]:
         return redirect(url_for('Login'))
 
     if request.method == "POST":
-        #logica pra pegar o id pelo click na musica
-        render_template("playlistUser.html")
+        data = request.json
+        nome_playlist = data.get("musicName")
+        if not nome_playlist:
+            return "erro"
+        
+        print("\n\n>>>", nome_playlist)
+        controladora.criarPlaylist(nome_playlist, codUser)
+        #if 
+        #idPlaylist = 5#forms.get("playlistInput")
+        #redirect(url_for("playlistUsuario"), id_playlist = idPlaylist)
     else:
-        playlist = [("Panic at Disco","https://via.placeholder.com/150"),("Panic at Disco","https://via.placeholder.com/150")]
+        #playlists = [("Panic at Disco","https://via.placeholder.com/150"),("Panic at Disco","https://via.placeholder.com/150")]
+        pass
 
-    return render_template("playlistCreation.html",Playlist=playlist)
+    
+    return render_template("playlistCreation.html",Playlists=playlists)
 
 #Ricardo
 @app.route("/playlistUser/{id_playlist}",methods=["GET","POST"])
