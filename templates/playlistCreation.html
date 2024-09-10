@@ -14,16 +14,24 @@
         <div>
             <label id="nomePlaylistTitulo">Playlists</label>
         </div>
-        <div>
-            <button id="embaralharPlaylistButtom">Embaralhar </button>
-        </div>
+        <!--div>
+            <button id="embaralharPlaylistButtom" action="criar"> Embaralhar </button>
+        </div-->
+
+
+        <form id="addFormMusicPlaylist">
+            <input type="text" placeholder="Nome da playlist" name="playlistInput" id="musicaInput" class="inputMusic">
+            <button id="addMusicForm" onclick="criarPlaylist(event)">Criar playlist</button>
+        </form>
+
 
         <main id="PlaylistSalvas">
-            {% for playlist in Playlist %}
+            {% for playlist in Playlists %}
             <div id="playlistBD">
                 <div id="containerInfoPlaylistBD">
-                    <img src="{{playlist[1]}}" alt="playlistCapa" id="capaPlaylist">
-                    <label id="namePlaylist">{{playlist[0]}}</label>
+                    <form action="/playlistUsuario{{playlist[0]}}">
+                        <label id="namePlaylist">{{playlist[1]}}</label>
+                    </form>
                 </div>
             </div>
             {% endfor %}
@@ -31,5 +39,5 @@
     </div>
 
 </body>
-
+<script src="{{url_for('static',filename='javascript/modMusicas/adicaoMusicas.js')}}"></script>
 </html>
