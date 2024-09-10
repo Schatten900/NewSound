@@ -23,15 +23,12 @@ class CntrlSMusica:
             if result:
                 print(f"Codigo obtido: {CodMusica}")
                 print("Já existe a musica no BD")
-                #result = self.checkMusicaSalvas(codUser,CodMusica)
-                #if not result:
-                #    return container.adicionarMusicaSalvas(codUser,CodMusica)
-                #print("Ja existe essa musica salva")
                 return True
-    
+
             else:
                 print("Musica nao existe na BD, vamos adiciona-la")
                 #Musica nao existe no banco de dados
+
                 nomeAlbum = musica.getAlbum()
                 print(f"Nome do album: {nomeAlbum}")
                 artistaMiniatura = musica.getArtista().getMiniatura()
@@ -68,9 +65,26 @@ class CntrlSMusica:
                     print("Adicionou a musica na BD")
                     print(resultMusica,codMusica)
                     if resultMusica:
-                        #Adiciona a musica salva pelo usuario 
-                        print("existe na MusicaBD")
-                        return container.adicionarMusicaArtista(codMusica,codArtista)
+                        #Vincula artista e vincula genero
+                        result = container.adicionarMusicaArtista(codMusica,codArtista)
+                        if not result:
+                            return False
+                        generos = []
+                        auxGeneros = musica.getGeneros()
+                        if not auxGeneros:
+                            print("Musica nao possui genero")
+                            return True
+                        #Existe genero e vamos adicionar no bd e vincular a musica
+                        generos = auxGeneros
+                        for genero in generos:
+                            result,codGenero = self.checkGenero(genero)
+                            if not result:
+                                resultAdd,codGenero = self.adicionarGenero(genero)
+                                if not resultAdd:
+                                    return False
+                            self.adicionarMusicaGenero(codGenero,codMusica)
+                        return True
+                    
                     print("Deu erro na BD")
                     return False
                 else:
@@ -79,9 +93,27 @@ class CntrlSMusica:
                     print("Adicionou a musica na BD sem album")
                     print(resultMusica,codMusica)
                     if resultMusica:
+                        #Vincula artista e vincula genero
                         print("Adicionou na musicaBD sem album")
-                        #Adiciona a musica salva pelo usuario 
-                        return container.adicionarMusicaArtista(codMusica,codArtista)
+                        result = container.adicionarMusicaArtista(codMusica,codArtista)
+                        if not result:
+                            return False
+                        generos = []
+                        auxGeneros = musica.getGeneros()
+                        if not auxGeneros:
+                            print("Musica nao possui genero")
+                            return True
+                        #Existe genero e vamos adicionar no bd e vincular a musica
+                        generos = auxGeneros
+                        for genero in generos:
+                            result,codGenero = self.checkGenero(genero)
+                            if not result:
+                                resultAdd,codGenero = self.adicionarGenero(genero)
+                                if not resultAdd:
+                                    return False
+                            self.adicionarMusicaGenero(codGenero,codMusica)
+                        return True
+                            
                     print("Deu erro ao adicionar sem album")
                     return False
 
@@ -130,6 +162,21 @@ class CntrlSMusica:
         #Lista todos os generos cadastrados no banco (tabela Genero)
         container = ContainerMusica()
         return container.listarGeneros()
+    
+    def checkGenero(self,genero):
+        #Checa se o genero ja existe no banco de dados
+        container = ContainerMusica()
+        return container.checkGenero(genero)
+    
+    def adicionarGenero(self,genero):
+        #Adiciona o genero no banco de dados
+        container = ContainerMusica()
+        return container.adicionarGenero(genero)
+    
+    def adicionarMusicaGenero(self,codGenero,genero):
+        #Vincula genero e musica
+        container = ContainerMusica()
+        return container.adicionarMusicaGenero(codGenero,genero)
     
 class ContainerMusica:
     def adicionarMusicaSalvas(self,codUser,codMusica):
@@ -271,7 +318,6 @@ class ContainerMusica:
         
     def listarTodasMusicas(self):
         try:
-            print("TO AQUI")
             QUERY = """
             SELECT * FROM MusicaNavegar
             """
@@ -294,12 +340,12 @@ class ContainerMusica:
             params = (genero)
             result = executeQuery(QUERY, params)
             if result:
-                return result
-            return False
+                return result[0]
+            return None
 
         except Exception as e:
             print(f"Erro ao checar a musica existente no usuario {e}")
-            return False
+            return None
         
     def listarGeneros(self):
         try:
@@ -313,4 +359,49 @@ class ContainerMusica:
 
         except Exception as e:
             print(f"Erro ao checar a musica existente no usuario {e}")
+            return False
+        
+    def checkGenero(self,genero):
+        try:
+            QUERY = """
+            SELECT CodGenero,Nome FROM Genero WHERE Nome = %s
+            """
+            params = (genero,)
+            result = executeQuery(QUERY,params)
+            if result:
+                return result[0]
+            return False,-1
+
+        except Exception as e:
+            print(f"Não foi possivel encontrar o genero {e}")
+            return False,-1
+        
+    def adicionarGenero(self,genero):
+        try:
+            QUERY = """
+            INSERT INTO Genero (Nome) VALUES (%s)
+            """
+            params = (genero,)
+            codGenero = executeQuery(QUERY,params)
+            if codGenero:
+                print(codGenero)
+                return True,codGenero
+            return False,-1
+
+        except Exception as e:
+            print(f"Não foi possivel adicionar o genero {e}")
+            return False,-1
+
+    def adicionarMusicaGenero(self,codGenero,codMusica):
+        try:
+            QUERY = """
+            INSERT INTO MusicaGenero (codGenero,codMusica) VALUES (%s,%s)
+            """
+            params = (codGenero,codMusica,)
+            codGenero = executeQuery(QUERY,params)
+            print("Vinculado genero com sucesso",codGenero)
+            return True
+
+        except Exception as e:
+            print(f"Não foi possivel adicionar o genero {e}")
             return False
