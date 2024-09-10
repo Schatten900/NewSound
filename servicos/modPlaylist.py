@@ -49,10 +49,10 @@ class CntrlSPlaylist:
         #retorna todos os atributos da tabela playlist
         pass
 
-    def criarPlaylist(self, codPlaylist, nomePlaylist, codUser):
+    def criarPlaylist(self,nomePlaylist, codUser):
         #Cria uma playlist na lista de playlists do usuario
         container = ContainerPlaylist()
-        return container.criarPlaylist(codPlaylist, nomePlaylist, codUser)
+        return container.criarPlaylist(nomePlaylist, codUser)
 
     def editarPlaylist(self,idUsuario,idPlaylist):
         #Permite editar a playlist do usuario (nome,miniatura etc)
@@ -122,13 +122,15 @@ class ContainerPlaylist:
             print(f"Erro ao inserir no banco MusicasSalvas: {e}")
             return False
 
-    def criarPlaylist(self, codPlaylist, nomePlaylist, codUser):
+    def criarPlaylist(self,nomePlaylist, codUser):
         try:
             QUERY1 = """
-            INSERT INTO Playlist (CodPlaylist, Nome) VALUES (%s,%s)
+            INSERT INTO Playlist (Nome) VALUES (%s)
             """
-            params1 = (codPlaylist, nomePlaylist)
-            executeQuery(QUERY1,params1)
+            params1 = (nomePlaylist)
+            codPlaylist = executeQuery(QUERY1,params1)
+            if not codPlaylist:
+                return False
 
             QUERY2 = """
             INSERT INTO PlaylistUsuario (CodUser, CodPlaylist) VALUES (%s,%s)
@@ -147,12 +149,6 @@ class ContainerPlaylist:
     def removerPlaylist(self, codPlaylist, codUser):
         try:
             #Remove aquela playlist, assim como os seus relacionamentos, com Musicas e Usuarios
-            QUERY1 = """
-            DELETE FROM Playlist 
-            WHERE CodPlaylist = %s
-            """
-            params1 = (codPlaylist)
-            executeQuery(QUERY1, params1)
 
             QUERY2 = """
             DELETE FROM PlaylistUsuario 
@@ -167,6 +163,13 @@ class ContainerPlaylist:
             """
             params3 = (codPlaylist)
             executeQuery(QUERY3, params3)
+        
+            QUERY1 = """
+            DELETE FROM Playlist 
+            WHERE CodPlaylist = %s
+            """
+            params1 = (codPlaylist)
+            executeQuery(QUERY1, params1)
             return True
 
         except ValueError as e:
@@ -176,7 +179,7 @@ class ContainerPlaylist:
     def pesquisarPlaylist(self, codUser):
         try:
             QUERY = """
-            SELECT P.CodPlaylist, P.Nome 
+            SELECT P.CodPlaylist,P.Nome 
             FROM Playlist P
             INNER JOIN PlaylistUsuario PU ON P.CodPlaylist = PU.CodPlaylist
             WHERE PU.CodUser = %s
