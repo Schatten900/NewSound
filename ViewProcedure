@@ -40,13 +40,14 @@ END //
 
 CREATE VIEW MusicaNavegar AS
 SELECT 
-    Musica.Nome AS NomeMusica,
+    M.Nome AS NomeMusica,
     A.Nome AS NomeArtista,
     AL.Nome AS NomeAlbum,
-    G.Nome AS NomeGenero
-FROM Musica
-JOIN Album AS AL ON Musica.CodAlbum = AL.CodAlbum
-JOIN ArtistaMusica AS AM ON Musica.CodMusica = AM.CodMusica
+    G.Nome AS NomeGenero,
+    M.CodMusica
+FROM Musica as M
+JOIN Album AS AL ON M.CodAlbum = AL.CodAlbum
+JOIN ArtistaMusica AS AM ON M.CodMusica = AM.CodMusica
 JOIN Artista AS A ON AM.CodArtista = A.CodArtista
-JOIN MusicaGenero AS MG ON Musica.CodMusica = MG.CodMusica
+JOIN MusicaGenero AS MG ON M.CodMusica = MG.CodMusica
 JOIN Genero AS G ON MG.CodGenero = G.CodGenero;
