@@ -482,7 +482,6 @@ def playlistUsuario(id_playlist):
         if action == "add":
             nameMusic = data.get("musicName")
             nameArtista = data.get("artistaName")
-            print(nameMusic)
             result,codMusica = controladora2.pesquisarMusica(nameMusic,nameArtista)
             if result:
                 adicionou = controladora.adicionarMusicaPlaylist(nameArtista,nameMusic,codMusica,id_playlist)

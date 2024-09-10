@@ -1,5 +1,5 @@
 //Funcao para adicionar musica no banco de dados
-function addMusicInMusic(event, endpoint) {
+function addMusicInMusic(event) {
    event.preventDefault();
    const musicName = document.getElementById("musicaInput");
    const artistaName = document.getElementById("artistaInput");
@@ -18,10 +18,13 @@ function addMusicInMusic(event, endpoint) {
    if (artistaName.value)
       formData.append("artistaName", artistaName.value);
 
-   if (musica.files.length > 0)
+   if (musica.files.length > 0){
       formData.append("musica", musica.files[0]);
+      console.log("aaaaaaaaaaaaaaaaaaaa")
+   }
+      
 
-   let userUrl = `http://${window.location.host}/${endpoint}`;
+   let userUrl = `http://${window.location.host}/navegar`;
    fetch(userUrl, {
       method: "POST",
       body: formData
@@ -61,6 +64,39 @@ function addMusicUser(event, endpoint) {
       action: "add",
       musicName: musicName,
       artistaName: artistaName
+   }
+
+   fetch(addUrl, {
+      method: "POST",
+      headers: {
+         "Content-Type": "application/json"
+      },
+      body: JSON.stringify(infoAdd)
+   })
+      .then(response => {
+         if (!response.ok)
+            throw new Error("Erro ao executar a response:", response.status)
+         return response.json();
+      })
+      .then(data => {
+         if (data.status !== "success") {
+            window.console("Ocorreu um erro inesperado")
+            window.alert("Musica nao encontrada")
+         }
+         else
+            window.location.href = data.redirect;
+      })
+      .catch(error => console.error("Ocorreu um erro chamado: ", error))
+}
+
+function criarPlaylist(event) {
+   event.preventDefault();
+   let addUrl = `http://${window.location.host}/playlistUser`;
+   const musicName = document.getElementById("musicaInput").value;
+
+   const infoAdd = {
+      action: "add",
+      musicName: musicName,
    }
 
    fetch(addUrl, {
