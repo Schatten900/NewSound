@@ -465,8 +465,7 @@ def playlistUsuario(id_playlist):
     #Adicao, seleção e remoção  relacionadas a uma playlist criada pelo usuario
     if 'userID' not in session or not session["userID"]:
         return redirect(url_for('Login'))
-    
-    codUsuario = session["userID"]
+
     controladora = CntrlSPlaylist()
     controladora2 = CntrlSMusica()
     if request.method == "POST":
@@ -482,17 +481,13 @@ def playlistUsuario(id_playlist):
         if action == "add":
             nameMusic = data.get("musicName")
             nameArtista = data.get("artistaName")
-            result,codMusica = controladora2.pesquisarMusica(nameMusic,nameArtista)
-            if result:
-                adicionou = controladora.adicionarMusicaPlaylist(nameArtista,nameMusic,codMusica,id_playlist)
-                if adicionou:
-                    print(adicionou)
-                    redirect_url = url_for('playlistUsuario', id_playlist=id_playlist)
-                    return jsonify({"message": "redirecionando com sucesso", "status": "success", "redirect": redirect_url}), 200
-                else:
-                    return jsonify({"message":"Houve um erro na adicao","status":"fail"}),401
+            adicionou = controladora.adicionarMusicaPlaylist(nameArtista,nameMusic,id_playlist)
+            if adicionou:
+                print(adicionou)
+                redirect_url = url_for('playlistUsuario', id_playlist=id_playlist)
+                return jsonify({"message": "redirecionando com sucesso", "status": "success", "redirect": redirect_url}), 200
             else:
-                return jsonify({"message":"Musica nao existe no banco","status":"fail"}),401
+                return jsonify({"message":"Houve um erro na adicao","status":"fail"}),401
         
         elif action == "remove":
             data = request.json
@@ -520,7 +515,7 @@ def playlistUsuario(id_playlist):
             return send_file(io.BytesIO(mp3Arquivo), mimetype='audio/mpeg', as_attachment=False, download_name='musica.mp3')
         
         elif action == "embaralhar":
-            musicasSalvas = controladora.pesquisarMusicas(id_playlist)
+            musicasSalvas = controladora.listarMusicasPlaylist(id_playlist)
             musicas = musicasSalvas
             codigos = []
             musicasBlob = []
@@ -550,10 +545,11 @@ def playlistUsuario(id_playlist):
             print(f"Acao invalida: {action}")
             return jsonify({"message":"ocorreu um erro inesperado","status":"fail"}),401
     else: 
-        musicas = controladora.pesquisarMusicas(id_playlist)
+        musicas = controladora.listarMusicasPlaylist(id_playlist)
+        print(musicas)
         if musicas:
             return render_template("playlistUser.html",Musicas=musicas,idPlaylist=id_playlist)
-        return render_template("PlaylistUser.html")
+        return render_template("PlaylistUser.html",idPlaylist=id_playlist)
     
 ############################################    
 

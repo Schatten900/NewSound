@@ -13,7 +13,7 @@
 <body>
     <div id="ContainerPlaylist">
         <div>
-            <label id="nomePlaylistTitulo">playlist</label>
+            <label id="nomePlaylistTitulo">{{Musicas[0][3]}}</label>
         </div>
 
         <div>
@@ -37,10 +37,10 @@
         <main id="musicPlaylistSalvas">
             {% for music in Musicas %}
             <div id="musicBD" onclick="tocarMusica(event,'playlistUser/{{idPlaylist}}')"
-                data-music-cod="{{ music[0] }}">
+                data-music-cod="{{ music[2] }}">
                 <div id="containerInfoMusicBD">
-                    <label id="nameMusic">{{music[1]}}</label>
-                    <label id="nameArtistaMusic">{{music[2]}}</label>
+                    <label id="nameMusic">{{music[0]}}</label>
+                    <label id="nameArtistaMusic">{{music[1]}}</label>
                 </div>
 
                 <div id="removeButtomMusic">

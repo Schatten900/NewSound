@@ -1,5 +1,6 @@
 from dominios.music import Cancao
 from dominios.bancoDef import executeQuery
+from servicos.modMusica import CntrlSMusica
 
 class CntrlSPlaylist:
     def __init__(self):
@@ -8,19 +9,15 @@ class CntrlSPlaylist:
     def getMusic(self):
         return self.music
 
-    def adicionarMusicaPlaylist(self, artista, nomeMusica, codMusica, codPlaylist):
+    def adicionarMusicaPlaylist(self, artista, nomeMusica, codPlaylist):
         #adiciona uma musica aquela playlist
         try:
-            musica = self.getMusic()
-            existe = musica.setCancao(artista, nomeMusica)
-            if not existe:
-                print("Nao existe essa musica")
-                return False
-
+            controladora = CntrlSMusica()
             container = ContainerPlaylist()
-            # Se a musica existe no banco, adicione ela a musicaSalvas
-            if self.pesquisarMusica(codMusica) and codMusica not in self.pesquisarMusicas(codPlaylist):
+            result, codMusica = controladora.pesquisarMusica(nomeMusica,artista)
 
+            # Se a musica existe no banco, adicione ela a musicaSalvas
+            if result:
                 return container.adicionarMusica(codMusica, codPlaylist)
 
             #Caso em que a música já está na playlist ou não está cadastrada
@@ -40,10 +37,11 @@ class CntrlSPlaylist:
         container = ContainerPlaylist()
         return container.pesquisarMusica(codMusica)
 
-    def pesquisarMusicas(self,codPlaylist):
+    def listarMusicasPlaylist(self,codPlaylist):
         #pesquisar todas as musicas vinculadas aquela playlist
+        print("Controladora")
         container = ContainerPlaylist()
-        return container.pesquisarPlaylist(codPlaylist)
+        return container.listarMusicasPlaylist(codPlaylist)
 
     def lerPlaylist(self,idPlaylist):
         #retorna todos os atributos da tabela playlist
@@ -98,17 +96,27 @@ class ContainerPlaylist:
             print(f"Erro ao inserir no banco MusicasSalvas: {e}")
             return False
 
-    def pesquisarMusicas(self, codPlaylist):
+    def listarMusicasPlaylist(self, codPlaylist):
         try:
             QUERY = """
-            SELECT CodMusica FROM PlaylistMusica WHERE CodPlaylist = %s
+            SELECT M.Nome,A.Nome,M.CodMusica,P.Nome
+            FROM PlaylistMusica as PM
+            INNER JOIN Musica as M ON PM.CodMusica = M.CodMusica
+            INNER JOIN ArtistaMusica as AM ON AM.CodMusica = M.CodMusica
+            INNER JOIN Artista as A ON A.CodArtista = AM.CodArtista
+            INNER JOIN Playlist as P ON PM.CodPlaylist = P.CodPlaylist
+            WHERE PM.CodPlaylist = %s
             """
-            params = (codPlaylist)
-            return executeQuery(QUERY,params)
+            params = (codPlaylist,)
+            result = executeQuery(QUERY,params)
+            if result:
+                print(result)
+                return result
+            return None
 
         except ValueError as e:
-            print(f"Erro ao inserir no banco MusicasSalvas: {e}")
-            return False
+            print(f"Erro ao inserir no banco playlistUsuario: {e}")
+            return None
 
     def pesquisarMusica(self,codMusica):
         try:
