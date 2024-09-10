@@ -465,7 +465,6 @@ def playlistUsuario(id_playlist):
     #Adicao, seleção e remoção  relacionadas a uma playlist criada pelo usuario
     if 'userID' not in session or not session["userID"]:
         return redirect(url_for('Login'))
-
     controladora = CntrlSPlaylist()
     controladora2 = CntrlSMusica()
     if request.method == "POST":
