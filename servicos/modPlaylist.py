@@ -5,7 +5,10 @@ class CntrlSPlaylist:
     def __init__(self):
         self.music = Cancao()
 
-    def adicionarMusica(self,musicaNome,artista,idPlaylist,musica=None):
+    def getMusic(self):
+        return self.music
+
+    def adicionarMusicaPlaylist(self, artista, nomeMusica, codMusica, codPlaylist):
         #adiciona uma musica aquela playlist
         try:
             musica = self.getMusic()
@@ -13,16 +16,16 @@ class CntrlSPlaylist:
             if not existe:
                 print("Nao existe essa musica")
                 return False
-            
+
             container = ContainerPlaylist()
             # Se a musica existe no banco, adicione ela a musicaSalvas
             if self.pesquisarMusica(codMusica) and codMusica not in self.pesquisarMusicas(codPlaylist):
-                
+
                 return container.adicionarMusica(codMusica, codPlaylist)
-            
+
             #Caso em que a música já está na playlist ou não está cadastrada
             return False
-            
+
         except ValueError as e:
             print(f"Erro ao adicionar no banco de dados: {e}")
             return False
@@ -36,7 +39,7 @@ class CntrlSPlaylist:
         #retorna o codigo da musica fornecido, caso a música esteja cadastrada no banco
         container = ContainerPlaylist()
         return container.pesquisarMusica(codMusica)
-    
+
     def pesquisarMusicas(self,codPlaylist):
         #pesquisar todas as musicas vinculadas aquela playlist
         container = ContainerPlaylist()
@@ -46,10 +49,10 @@ class CntrlSPlaylist:
         #retorna todos os atributos da tabela playlist
         pass
 
-    def criarPlaylist(self, codPlaylist, nomePlaylist, codUser):
+    def criarPlaylist(self,nomePlaylist, codUser):
         #Cria uma playlist na lista de playlists do usuario
         container = ContainerPlaylist()
-        return container.criarPlaylist(codPlaylist, nomePlaylist, codUser)
+        return container.criarPlaylist(nomePlaylist, codUser)
 
     def editarPlaylist(self,idUsuario,idPlaylist):
         #Permite editar a playlist do usuario (nome,miniatura etc)
@@ -81,14 +84,64 @@ class ContainerPlaylist:
             print(f"Erro ao inserir no banco MusicasSalvas: {e}")
             return False
 
-    def removerMusica(self,musica,artista,idPlaylist):
-        pass
+    def removerMusica(self, codMusica, codPlaylist):
+        try:
+            QUERY = """
+            DELETE FROM PlaylistMusica 
+            WHERE CodMusica = %s AND CodPlaylist = %s
+            """
+            params = (codMusica, codPlaylist)
+            executeQuery(QUERY,params)
+            return True
 
-    def pesquisarMusica(self,idPlaylist):
-        pass
+        except ValueError as e:
+            print(f"Erro ao inserir no banco MusicasSalvas: {e}")
+            return False
 
-    def adicionarPlaylist(self,idPlaylist):
-        pass
+    def pesquisarMusicas(self, codPlaylist):
+        try:
+            QUERY = """
+            SELECT CodMusica FROM PlaylistMusica WHERE CodPlaylist = %s
+            """
+            params = (codPlaylist)
+            return executeQuery(QUERY,params)
+
+        except ValueError as e:
+            print(f"Erro ao inserir no banco MusicasSalvas: {e}")
+            return False
+
+    def pesquisarMusica(self,codMusica):
+        try:
+            QUERY = """
+            SELECT CodMusica FROM Musica WHERE CodMusica = %s
+            """
+            params = (codMusica)
+            return executeQuery(QUERY,params)
+
+        except ValueError as e:
+            print(f"Erro ao inserir no banco MusicasSalvas: {e}")
+            return False
+
+    def criarPlaylist(self,nomePlaylist, codUser):
+        try:
+            QUERY1 = """
+            INSERT INTO Playlist (Nome) VALUES (%s)
+            """
+            params1 = (nomePlaylist)
+            codPlaylist = executeQuery(QUERY1,params1)
+            if not codPlaylist:
+                return False
+
+            QUERY2 = """
+            INSERT INTO PlaylistUsuario (CodUser, CodPlaylist) VALUES (%s,%s)
+            """
+            params2 = (codUser, codPlaylist)
+            executeQuery(QUERY2,params2)
+            return True
+
+        except ValueError as e:
+            print(f"Erro ao inserir no banco MusicasSalvas: {e}")
+            return False
 
     def editarPlaylist(self,idPlaylist):
         pass
@@ -96,12 +149,6 @@ class ContainerPlaylist:
     def removerPlaylist(self, codPlaylist, codUser):
         try:
             #Remove aquela playlist, assim como os seus relacionamentos, com Musicas e Usuarios
-            QUERY1 = """
-            DELETE FROM Playlist 
-            WHERE CodPlaylist = %s
-            """
-            params1 = (codPlaylist)
-            executeQuery(QUERY1, params1)
 
             QUERY2 = """
             DELETE FROM PlaylistUsuario 
@@ -116,6 +163,13 @@ class ContainerPlaylist:
             """
             params3 = (codPlaylist)
             executeQuery(QUERY3, params3)
+        
+            QUERY1 = """
+            DELETE FROM Playlist 
+            WHERE CodPlaylist = %s
+            """
+            params1 = (codPlaylist)
+            executeQuery(QUERY1, params1)
             return True
 
         except ValueError as e:
@@ -125,7 +179,7 @@ class ContainerPlaylist:
     def pesquisarPlaylist(self, codUser):
         try:
             QUERY = """
-            SELECT P.Nome 
+            SELECT P.CodPlaylist,P.Nome 
             FROM Playlist P
             INNER JOIN PlaylistUsuario PU ON P.CodPlaylist = PU.CodPlaylist
             WHERE PU.CodUser = %s

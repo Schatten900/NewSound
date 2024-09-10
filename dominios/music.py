@@ -83,6 +83,9 @@ class Cancao:
     def getCapaAlbum(self):
         return self.capaAlbum
     
+    def getGeneros(self):
+        return self.generos
+    
     def setCancao(self,artista,musica):
         sp = getSpotifyConnection()
         try:

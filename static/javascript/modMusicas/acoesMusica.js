@@ -5,7 +5,7 @@ function acoesMusicas(event, endpoint, acao) {
     let musicaCod = event.currentTarget.getAttribute('data-music-cod');
     const requestData = {
         action: acao,
-        CodMusic: musicaCod
+        musicaCod: musicaCod
     };
     console.log(musicaCod)
     console.log(acao)

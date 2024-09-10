@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="{{url_for('static',filename='styles/playlist.css')}}" rel="stylesheet">
     <link href="{{url_for('static',filename='styles/playlistLista.css')}}" rel="stylesheet">
     <title>Playlist Salvas</title>
 </head>
@@ -14,16 +15,28 @@
         <div>
             <label id="nomePlaylistTitulo">Playlists</label>
         </div>
-        <div>
-            <button id="embaralharPlaylistButtom">Embaralhar </button>
-        </div>
+        <!--div>
+            <button id="embaralharPlaylistButtom" action="criar"> Embaralhar </button>
+        </div-->
 
-        <main id="PlaylistSalvas">
-            {% for playlist in Playlist %}
-            <div id="playlistBD">
-                <div id="containerInfoPlaylistBD">
-                    <img src="{{playlist[1]}}" alt="playlistCapa" id="capaPlaylist">
-                    <label id="namePlaylist">{{playlist[0]}}</label>
+
+        <form id="AddPlaylist">
+            <input type="text" placeholder="Nome da playlist" id="musicaInput" class="inputMusic">
+            <button id="addMusicForm" onclick="criarPlaylist(event)">Criar playlist</button>
+        </form>
+
+
+        <main id="musicPlaylistSalvas">
+            {% for playlist in Playlists %}
+            <div id="musicBD" data-playlist-code="{{ playlist[0] }}" onclick="acoesPlaylist(event,'redirecionar')">
+                <div id="containerInfoMusicBD">
+                    <label id="namePlaylist">{{playlist[1]}}</label>
+                </div>
+                <div id="removeButtomMusic">
+                    <button class="circleButtom" onclick="acoesPlaylist(event,'remove')"
+                    data-playlist-code="{{ playlist[0] }}">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
                 </div>
             </div>
             {% endfor %}
@@ -31,5 +44,8 @@
     </div>
 
 </body>
+<script src="{{url_for('static',filename='javascript/modMusicas/adicaoMusicas.js')}}"></script>
+<script src="{{url_for('static',filename='javascript/modMusicas/acoesMusica.js')}}"></script>
+<script src="{{url_for('static',filename='javascript/modEfeitos/auxDef.js')}}"></script>
 
 </html>

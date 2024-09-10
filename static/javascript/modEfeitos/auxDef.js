@@ -56,3 +56,42 @@ function expandir() {
     }
     console.log("Bloqueou")
 }
+
+function exibirFormCadastro(){
+    const form = document.getElementById("addFormMusicPlaylist");
+    if (form.style.display === "none")
+        form.style.display = "block";
+    else
+        form.style.display = "none"
+}
+
+function filtrarGenero(event){
+    event.preventDefault();
+    let generoSelecionado = document.getElementById('genre').value;
+    let conteudo = {
+        "action":"filtrar",
+        "genre": generoSelecionado
+    }
+    console.log("Generos aqui",conteudo)
+    let urlGenero = `http://${window.location.host}/navegar`;
+
+    fetch(urlGenero,{
+        method:"POST",
+        headers:{
+            "Content-Type":"Application/json"
+        },
+        body:JSON.stringify(conteudo)
+    })
+    .then(response=>{
+        if (!response.ok)
+            throw new Error("Erro ao filtrar",response.message);
+        return response.json();
+    })
+    .then(data=>{
+        if (data.status !== "success")
+            console.log("Erro ao filtrar denovo")
+        else
+            window.location.href = data.redirect;
+    })
+    .catch(error=>console.error("Erro no console",error))
+}

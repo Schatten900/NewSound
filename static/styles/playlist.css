@@ -4,10 +4,6 @@ body {
     background-color: rgba(26, 26, 26, 0.911);
     margin: 0px;
     scrollbar-width: thin;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-bottom: 70px;
 }
 
 /* Scroll da pagina */
@@ -27,7 +23,6 @@ body {
 }
 
 #ContainerPlaylist {
-    width: 80%;
     margin-top: 20px;
     display: flex;
     flex-direction: column;
@@ -103,6 +98,24 @@ body {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 3);
 }
 
+#musicBDVariacao{
+    width: 400px;
+    height: 80px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: rgba(26, 26, 26, 0.911);
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.3ms ease, box-shadow 0.3ms ease;
+}
+
+#musicBDVariacao:hover {
+    transform: scale(1.05, 1.05);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 3);
+}
+
 #containerInfoMusicBD {
     padding-left: 10px;
     padding-bottom: 8px;
@@ -123,6 +136,12 @@ body {
     color: rgb(190, 190, 190);
 }
 
+#nameGeneroMusic{
+    font-family: "Oswald", sans-serif;
+    font-size: 15px;
+    color:rgb(0, 255, 21);
+}
+
 .circleButtom {
     width: 50px;
     background-color: rgba(26, 26, 26, 0.911);
@@ -138,7 +157,7 @@ body {
 
 
 #addFormMusicPlaylist {
-    display: none;
+    display: block;
     margin-top: 20px;
 }
 
@@ -226,13 +245,109 @@ body {
     padding-right: 5px;
 }
 
-
-#favoriteButtomMusic{
-    display: flex;
-    flex-direction: row;
-    padding-right: 5px;
+/* Para ajustar dinamicamente o tamanho do dropdown */
+#genre {
+    width: auto;
 }
 
-#favoriteButtomMusic i{
-    color: rgb(190, 190, 190);
+/* Estilo da listagem de músicas */
+#musicPlaylistSalvas {
+    display: flex;
+    flex-direction: column;
+}
+
+.musicItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.musicInfo {
+    display: flex;
+    flex-direction: column;
+}
+
+.hiddenInput {
+    display: none;
+}
+
+.circleButton {
+    background-color: transparent;
+    border: none;
+    color: gold;
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+
+#filterButton {
+    font-family: "Oswald", sans-serif;
+    font-size: 15px;
+    width: 100px;
+    height: 30px;
+    color: black;
+    background-color: rgb(0, 255, 21);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.3ms ease, box-shadow 0.3ms ease;
+}
+
+#filterButton:hover {
+    transform: scale(1.1, 1.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 3);
+}
+
+#FormGeneroFilter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+#addFormMusicCadastrar {
+    font-family: "Oswald", sans-serif;
+    font-size: 15px;
+    width: 250px;
+    height: 30px;
+    color: white;
+    background-color: rgba(26, 26, 26, 0.911);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.3ms ease, box-shadow 0.3ms ease;
+}
+
+#addFormMusicCadastrar:hover {
+    transform: scale(1.05, 1.05);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 3);
+}
+
+#addFormMusicPlaylist{
+    display:none;
+}
+
+#namePlaylist{
+    font-family: "Oswald", sans-serif;
+    font-size: 20px;
+    color: white;
+}
+
+
+#playlistBD{
+    width: 400px;
+    height: 60px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: rgba(26, 26, 26, 0.911);
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.3ms ease, box-shadow 0.3ms ease;
+}
+
+#containerInfoPlaylistBD{
+
 }

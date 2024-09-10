@@ -45,21 +45,132 @@ function addMusicInMusic(event, endpoint) {
       })
 }
 
-
 //Funcao para adicionar a musica em favoritos ou em playlist
 function addMusicUser(event, endpoint) {
    event.preventDefault();
+   console.log(endpoint)
    let addUrl = `http://${window.location.host}/${endpoint}`;
 
    const musicName = document.getElementById("musicaInput").value;
    const artistaName = document.getElementById("artistaInput").value;
-   console.log(musicName.value);
-   console.log(artistaName.value);
+   console.log(musicName);
+   console.log(artistaName);
+   console.log("AAAAA")
 
    const infoAdd = {
       action: "add",
       musicName: musicName,
       artistaName: artistaName
+   }
+
+   fetch(addUrl, {
+      method: "POST",
+      headers: {
+         "Content-Type": "application/json"
+      },
+      body: JSON.stringify(infoAdd)
+   })
+      .then(response => {
+         if (!response.ok)
+            throw new Error("Erro ao executar a response:", response.status)
+         return response.json();
+      })
+      .then(data => {
+         if (data.status !== "success") {
+            window.console("Ocorreu um erro inesperado")
+            window.alert("Musica nao encontrada")
+         }
+         else
+            window.location.href = data.redirect;
+      })
+      .catch(error => console.error("Ocorreu um erro chamado: ", error))
+}
+
+
+function addPlaylistMusic(event) {
+   event.preventDefault();
+   let playlistId = event.currentTarget.getAttribute('data-id-playlist');
+   const addUrl = `http://${window.location.host}/playlistUser/${playlistId}`;
+
+   const musicName = document.getElementById("musicaInput").value;
+   const artistaName = document.getElementById("artistaInput").value;
+   console.log(musicName)
+   console.log(artistaName)
+   console.log(playlistId)
+
+   const infoAdd = {
+      action: "add",
+      musicName: musicName,
+      artistaName: artistaName
+   }
+
+   fetch(addUrl, {
+      method: "POST",
+      headers: {
+         "Content-Type": "application/json"
+      },
+      body: JSON.stringify(infoAdd)
+   })
+   .then(response => {
+      if (!response.ok)
+         throw new Error("Erro ao executar a response:", response.status)
+      return response.json();
+   })
+   .then(data => {
+      if (data.status !== "success") {
+         console.log("Ocorreu um erro inesperado")
+         alert("Musica nao encontrada")
+      }
+      else
+         window.location.href = data.redirect;
+   })
+   .catch(error => console.error("Ocorreu um erro chamado: ", error))
+}
+
+function criarPlaylist(event) {
+   event.preventDefault();
+   let addUrl = `http://${window.location.host}/playlistUser`;
+   const musicName = document.getElementById("musicaInput").value;
+
+   const infoAdd = {
+      action: "add",
+      musicName: musicName,
+   }
+
+   fetch(addUrl, {
+      method: "POST",
+      headers: {
+         "Content-Type": "application/json"
+      },
+      body: JSON.stringify(infoAdd)
+   })
+      .then(response => {
+         if (!response.ok)
+            throw new Error("Erro ao executar a response:", response.status)
+         return response.json();
+      })
+      .then(data => {
+         if (data.status !== "success") {
+            window.console("Ocorreu um erro inesperado")
+            window.alert("Musica nao encontrada")
+         }
+         else
+            window.location.href = data.redirect;
+      })
+      .catch(error => console.error("Ocorreu um erro chamado: ", error))
+}
+
+function acoesPlaylist(event,acao) {
+
+   event.preventDefault();
+   let addUrl = `http://${window.location.host}/playlistUser`;
+
+   let codPlaylist = event.currentTarget.getAttribute('data-playlist-code');
+   console.log(codPlaylist);
+
+   const infoAdd = {
+      action: acao,
+      codPlaylist: codPlaylist
    }
 
    fetch(addUrl, {
