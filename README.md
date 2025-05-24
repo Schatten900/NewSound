@@ -1,42 +1,26 @@
-Funcionalidades do app:
-1) Cadastro do usuario (Carlos)
- - Adicionar usuario
- - Editar informacoes do usuario
- - Excluir conta do usuario
- - Visualizar informacoes do usuario
- - Foto de usuario (BLOB)
+##O que é? 🤔
 
-2) Criacao de playlist (Ricardo)
-- Usuario poderá criar playlists proprias
-- Editar informações da playlist
-- Excluir playlist
+#O NewSound é uma aplicação web full stack que simula uma plataforma de streaming musical, com funcionalidades que incluem cadastro de usuários, gerenciamento de playlists, reprodução de músicas e armazenamento de álbuns/artistas.
 
-3) CRUD de playlist de usuario (Ricardo)
- - Adicionar musica na playlist
- - Remover musica da playlist
- - Tocar a musica da playlist (select)
- - Visualizacao das musicas da playlist (select)
+#Projetado com o objetivo de aprofundar meus conhecimentos em desenvolvimento completo de aplicações web com foco em mídia, banco de dados e interatividade, o NewSound integra diversas tecnologias modernas em seu ecossistema.
+Funcionalidades 🚀
 
-4) Salvar musicas (Carlos)
- - Usuario poderá favoritar musicas, armazenando em uma "galeria propria"
- - Remover musicas dos salvos
- - visualizar as musicas salvas
- - Embaralhar musicas, poderá tocar as musicas salvas em ordem aleátoria
+    👤 Cadastro e login de usuários.
 
-5) Navegar pelas musicas separadas por genero (Ricardo)
- - Select em musicas(entidade) agrupando por genero e ordem alfabetica
- - Mostrar quem é o artista da musica ordenada
- 
-6) Navegar pelos artistas e ver seus albuns (Carlos)
-- Select em artistas 
-- Cada artista possui albuns e musicas vinculadas
+    🎶 Upload e reprodução de músicas (via blob).
 
-6) View: Permite a visualização de albuns e seus artistas vinculados (Carlos)
+    🎧 Criação e edição de playlists.
 
-7) Procedure: Permite que o usuario possa excluir todas as playlists vinculadas a si.
+    🖼️ Armazenamento de imagens de álbuns/artistas em formato BLOB no MySQL.
 
+    🔍 Navegação por músicas filtradas por gênero.
 
-Informacoes para apresentação:
-API_ID=e10e16b09ea44e53bf93b99968f1eb5b
-API_KEY=caa81848462e4231b6eb03c286d70c3b
-FLASK_KEY=321456
+    ❤️ Sistema de favoritos para artistas, álbuns e músicas.
+
+    🔄 Integração com API externa para obter informações de álbuns 
+
+Como executar a aplicação? ⚙️
+git clone https://github.com/Schatten900/newsound.git
+cd newsound
+flask run
+Acesse em http://localhost:5000
