@@ -1,26 +1,36 @@
-##O que é? 🤔
+# 🎵 NewSound – Plataforma Musical Web
 
-#O NewSound é uma aplicação web full stack que simula uma plataforma de streaming musical, com funcionalidades que incluem cadastro de usuários, gerenciamento de playlists, reprodução de músicas e armazenamento de álbuns/artistas.
+## O que é? 🤔  
+O **NewSound** é uma aplicação web full stack que simula uma plataforma de streaming musical, oferecendo funcionalidades como cadastro de usuários, gerenciamento de playlists, reprodução de músicas e armazenamento de álbuns e artistas.
 
-#Projetado com o objetivo de aprofundar meus conhecimentos em desenvolvimento completo de aplicações web com foco em mídia, banco de dados e interatividade, o NewSound integra diversas tecnologias modernas em seu ecossistema.
-Funcionalidades 🚀
+Criado com o objetivo de aprofundar conhecimentos em desenvolvimento web completo, o projeto integra múltiplas tecnologias modernas, explorando desde o armazenamento de arquivos binários até a construção de APIs REST e renderização dinâmica no navegador.
 
-    👤 Cadastro e login de usuários.
+---
 
-    🎶 Upload e reprodução de músicas (via blob).
+## Funcionalidades 🚀  
+- 👤 Cadastro e autenticação de usuários  
+- 🎶 Upload, armazenamento e reprodução de músicas (via blob)  
+- 🎧 Criação, edição e remoção de playlists  
+- 🖼️ Upload e exibição de imagens de álbuns e artistas usando BLOB no banco de dados  
+- 🔍 Navegação por músicas filtradas por gênero  
+- ❤️ Favoritar músicas, álbuns e artistas  
+- 🔄 Integração com API externa para obter dados de álbuns
 
-    🎧 Criação e edição de playlists.
+---
 
-    🖼️ Armazenamento de imagens de álbuns/artistas em formato BLOB no MySQL.
+## Como executar a aplicação? ⚙️  
 
-    🔍 Navegação por músicas filtradas por gênero.
+### Pré-requisitos:  
+- Python 3.10 ou superior  
+- MySQL Server  
+- Gerenciador de pacotes `pip`
 
-    ❤️ Sistema de favoritos para artistas, álbuns e músicas.
+### Passos:  
 
-    🔄 Integração com API externa para obter informações de álbuns 
-
-Como executar a aplicação? ⚙️
+1. Clone o repositório:  
+```bash
 git clone https://github.com/Schatten900/newsound.git
 cd newsound
 flask run
-Acesse em http://localhost:5000
+Acesse a aplicação no navegador:
+http://localhost:5000
